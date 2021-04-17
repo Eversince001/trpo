@@ -8,285 +8,181 @@ using System.Threading.Tasks;
 
 namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 {
-    class TPNumber
+    class TNumber
 
     {
 
-        public const int MinP = 2;
-
-        public const int MaxP = 16;
+        //Число
 
         public string number;
 
-        public int p, c;
+        //Основание системы счисления
 
-        public static string zero = "0";
+        int p;
 
-        public TPNumber(double a, int p, int c)
+        //Конвертер
+
+        TConverter conv;
+
+        //Конструктор
+
+        public TNumber(string num, int bas)
 
         {
 
-            if (p < MinP || p > MaxP)
+            //Сист. сч.
 
-                return;
+            p = bas;
 
-            this.p = p;
+            //Число
 
-            number = Conver_10_p.Do(a, p, c);
+            number = num;
 
-            this.c = c;
+            //Конвертер
+
+            conv = new TConverter(bas);
 
         }
 
-        public TPNumber(string a, string p, string c)
+        //Сложить
+
+        public TNumber Summ(TNumber num)
 
         {
 
-            if (Convert.ToInt16(p) < Convert.ToInt16(MinP) || Convert.ToInt16(p) > Convert.ToInt16(MaxP))
+            TNumber res = new TNumber(number, p);
 
-                return;
+            res.number =  conv.P10_To_P((conv.P_To_10(number) + conv.P_To_10(num.number))).ToString();
 
-            this.p = Convert.ToInt16(p);
+            res.number = res.number.Replace(',', '.');
 
-            this.c = Convert.ToInt16(c);
-
-            number = a;
+            return res;
 
         }
 
-        public TPNumber() { }
+        //Умножить
 
-        public TPNumber copy()
+        public TNumber Mult(TNumber num)
 
         {
 
-            TPNumber tmp = new TPNumber(this.number, Convert.ToString(this.p), Convert.ToString(this.c));
+            TNumber res = new TNumber(number, p);
 
-            return tmp;
+            res.number = conv.P10_To_P((conv.P_To_10(number) * conv.P_To_10(num.number))).ToString();
+
+            res.number = res.number.Replace(',', '.');
+
+            return res;
 
         }
 
-        public TPNumber add(TPNumber d)
+        //Вычесть
+
+        public TNumber Sub(TNumber num)
 
         {
 
-            TPNumber result = new TPNumber();
+            TNumber res = new TNumber(number, p);
 
-            double sum = (Conver_p_10.dval(Convert.ToString(d.number), d.p)
+            res.number = conv.P10_To_P((conv.P_To_10(number) - conv.P_To_10(num.number))).ToString();
 
-            + Conver_p_10.dval(Convert.ToString(this.number), p));
+            res.number = res.number.Replace(',', '.');
 
-            result.number = Convert.ToString(Conver_10_p.Do(sum, d.p, d.c));
-
-            result.p = d.p;
-
-            result.c = d.c > this.c ? d.c : this.c;
-
-            result.number = deletezero(result.number);
-
-            return result;
+            return res;
 
         }
 
-        public TPNumber mult(TPNumber d)
+        //Делить
+
+        public TNumber Div(TNumber num)
 
         {
 
-            TPNumber result = new TPNumber();
+            TNumber res = new TNumber(number, p);
 
-            result.number = Convert.ToString(Conver_10_p.Do(Conver_p_10.dval(Convert.ToString(d.number), d.p)
+            res.number = conv.P10_To_P((conv.P_To_10(number) / conv.P_To_10(num.number))).ToString();
 
-            * Conver_p_10.dval(Convert.ToString(this.number), p), d.p, d.c));
+            res.number = res.number.Replace(',', '.');
 
-            result.p = d.p;
-
-            result.c = d.c + this.c;
-
-            result.number = deletezero(result.number);
-
-            return result;
+            return res;
 
         }
 
-        private string deletezero(string num)
+        //Обратить
+
+        public TNumber Pay()
+
         {
-            if (num.Contains("."))
-            {
-                int i = num.Length - 1;
-                if (num[i] == '0')
-                {
-                    num = num.Remove(i);
 
-                    if (num[i - 1] == '0')
-                       num = deletezero(num);
-                }
-            }
+            TNumber res = new TNumber(number, p);
 
-            return num;
+            res.number = conv.P10_To_P((1 / conv.P_To_10(number))).ToString();
+
+            res.number = res.number.Replace(',', '.');
+
+            return res;
 
         }
 
-        public TPNumber sub(TPNumber d)
+        //Квадрат
+
+        public TNumber Sqr()
 
         {
 
-            TPNumber result = new TPNumber();
+            TNumber res = new TNumber(number, p);
 
-            result.number = Convert.ToString(Conver_10_p.Do(Conver_p_10.dval(Convert.ToString(this.number), p) -
+            res.number = conv.P10_To_P(Math.Pow(conv.P_To_10(number), 2)).ToString();
 
-            Conver_p_10.dval(Convert.ToString(d.number), d.p), d.p, d.c));
+            res.number = res.number.Replace(',', '.');
 
-            result.p = d.p;
-
-            result.c = d.c > this.c ? d.c : this.c;
-
-            result.number = deletezero(result.number);
-
-            return result;
+            return res;
 
         }
 
-        public TPNumber del(TPNumber d)
+        //Копия числа
+
+        public TNumber Copy()
 
         {
 
-            TPNumber result = new TPNumber();
+            TNumber res = new TNumber(number, p);
 
-            result.number = Convert.ToString(Conver_10_p.Do(Conver_p_10.dval(Convert.ToString(this.number), p) /
-
-            Conver_p_10.dval(Convert.ToString(d.number), d.p), d.p, d.c));
-
-            result.p = d.p;
-
-            result.c = d.c > this.c ? d.c : this.c;
-
-            result.number = deletezero(result.number);
-
-            return result;
+            return res;
 
         }
 
-        public TPNumber rev()
+        //Установить и получить число числом
 
+
+        //Установить и получить число строкой
+
+        public string getNumber()
         {
-
-            if (c == 0)
-
-                c = 15;
-
-            else
-
-                c = 15;
-
-            TPNumber result = new TPNumber(number, Convert.ToString(p), Convert.ToString(c));
-
-            result.number = Convert.ToString(Conver_10_p.Do(Math.Round(1 / Conver_p_10.dval(number, p), c), p, c));
-
-            result.number = deletezero(result.number);
-
-            return result;
-
-        }
-
-        public TPNumber sqr()
-
-        {
-
-            if (c < 8)
-
-                c = c * 2;
-
-            else
-
-                c = 15;
-
-            TPNumber result = new TPNumber(number, Convert.ToString(p), Convert.ToString(c));
-
-            result.number = Convert.ToString(Conver_10_p.Do(Math.Round(Math.Pow(Conver_p_10.dval(number, p), 2), c), p, c));
-
-            result.number = deletezero(result.number);
-
-            return result;
-
-        }
-
-        public double getPNum()
-
-        {
-
-            return Conver_p_10.dval(number, p);
-
-        }
-
-        public string getPString()
-
-        {
-
             return number;
-
         }
 
-        public double getNumberP()
+        //Установить и получить основание строкой
+
+        public string PString
 
         {
 
-            return p;
+            set { this.p = Convert.ToInt32(value); }
+
+            get { return Convert.ToString(p); }
 
         }
 
-        public string getStringP()
+        //Установить и получить основание числом
+
+        public int PInt
 
         {
 
-            return p.ToString();
+            set { this.p = value; }
 
-        }
-
-        public double getNumberC()
-
-        {
-
-            return c;
-
-        }
-
-        public string getStringC()
-
-        {
-
-            return c.ToString();
-
-        }
-
-        public void setP(int newb)
-
-        {
-
-            p = newb;
-
-        }
-
-        public void setPstring(string bs)
-
-        {
-
-            p = Convert.ToInt16(bs);
-
-        }
-
-        public void setC(int newc)
-
-        {
-
-            c = newc;
-
-        }
-
-        public void setCstring(string newc)
-
-        {
-
-            c = Convert.ToInt16(newc);
+            get { return p; }
 
         }
 

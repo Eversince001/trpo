@@ -51,7 +51,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
                 double r = Conver_p_10.dval(ed.number, Pin);
                 string res = Conver_10_p.Do(r, Pout, acc());
                 St = State.Converted;
-                his.AddRecord(Pin, Pout, ed.number, res);
+                ////his.AddRecord(Pin, Pout, ed.number, res);
                 return res;
             }
             else

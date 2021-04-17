@@ -71,6 +71,10 @@ namespace Лабораторная_работа__2_ТРПО
             this.ButtonMS = new System.Windows.Forms.Button();
             this.ButtonMPlus = new System.Windows.Forms.Button();
             this.NumberCache = new System.Windows.Forms.TextBox();
+            this.режимРаботыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pичныеЧислаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.дробныеЧислаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.комплесныеЧислаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -81,7 +85,8 @@ namespace Лабораторная_работа__2_ТРПО
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.выходToolStripMenuItem,
             this.справкаToolStripMenuItem,
-            this.правкаToolStripMenuItem});
+            this.правкаToolStripMenuItem,
+            this.режимРаботыToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(385, 24);
@@ -546,6 +551,34 @@ namespace Лабораторная_работа__2_ТРПО
             this.NumberCache.TabIndex = 42;
             this.NumberCache.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // режимРаботыToolStripMenuItem
+            // 
+            this.режимРаботыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pичныеЧислаToolStripMenuItem,
+            this.дробныеЧислаToolStripMenuItem,
+            this.комплесныеЧислаToolStripMenuItem});
+            this.режимРаботыToolStripMenuItem.Name = "режимРаботыToolStripMenuItem";
+            this.режимРаботыToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
+            this.режимРаботыToolStripMenuItem.Text = "Режим работы";
+            // 
+            // pичныеЧислаToolStripMenuItem
+            // 
+            this.pичныеЧислаToolStripMenuItem.Name = "pичныеЧислаToolStripMenuItem";
+            this.pичныеЧислаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pичныеЧислаToolStripMenuItem.Text = "p-ичные числа";
+            // 
+            // дробныеЧислаToolStripMenuItem
+            // 
+            this.дробныеЧислаToolStripMenuItem.Name = "дробныеЧислаToolStripMenuItem";
+            this.дробныеЧислаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.дробныеЧислаToolStripMenuItem.Text = "дробные числа";
+            // 
+            // комплесныеЧислаToolStripMenuItem
+            // 
+            this.комплесныеЧислаToolStripMenuItem.Name = "комплесныеЧислаToolStripMenuItem";
+            this.комплесныеЧислаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.комплесныеЧислаToolStripMenuItem.Text = "комплесные числа";
+            // 
             // Конвертор
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -649,5 +682,9 @@ namespace Лабораторная_работа__2_ТРПО
         private System.Windows.Forms.ToolStripMenuItem правкаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem копироватьВБуферToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem вставитьИзБуфераToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem режимРаботыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pичныеЧислаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem дробныеЧислаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem комплесныеЧислаToolStripMenuItem;
     }
 }

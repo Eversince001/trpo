@@ -6,203 +6,430 @@ using System.Threading.Tasks;
 
 namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 {
-    class TProcessor<T> where T : TPNumber
+    class TProcessor
 
     {
 
-        public T Lop_Res, Rop;
+        //Первое и второе число
 
-        public enum OperationState { none, add, sub, mult, div, rev, sqr }
+        private TNumber Lop_Res;
 
-        public OperationState State;
+        private TNumber Rop;
 
-        public TProcessor(int p)
+        //Операция. 0 - ничего, 1 - "+", 2 - "-", 3 - "*", 4 - "/"
+
+        private int operation;
+
+        //Конструктор
+
+        public TProcessor()
 
         {
 
-            Lop_Res = (T)new TPNumber(0, p, 1);
+            Lop_Res = new TNumber("0", 10);
 
-            Rop = (T)new TPNumber(0, p, 1);
+            Rop = new TNumber("0", 10);
 
-            Lop_Res.c = 0;
-
-            Lop_Res.p = p;
-
-            Lop_Res.number = "";
-
-            Rop.c = 0;
-
-            Rop.p = p;
-
-            Rop.number = "";
+            operation = 0;
 
         }
 
-        public void reset()
+        //Выполнить операцию
+
+        public void ExeuteOperation()
+        {
+            switch (operation)
+            {
+
+                case 1: Lop_Res = Lop_Res.Summ(Rop); break;
+
+                case 2: Lop_Res = Lop_Res.Sub(Rop); break;
+
+                case 3: Lop_Res = Lop_Res.Mult(Rop); break;
+
+                case 4: Lop_Res = Lop_Res.Div(Rop); break;
+
+                default: break;
+
+            }
+
+        }
+
+        //вычислить функцию
+
+        public void CalculateFunction(int n)
 
         {
 
-            Lop_Res.c = 0;
+            switch (n)
 
-            Lop_Res.p = 10;
+            {
+
+                // Обратная функция
+
+                case 30: Lop_Res = Lop_Res.Pay(); break;
+
+                case 32: Rop = Rop.Pay(); break;
+
+                // Функция корень
+
+                case 31: Lop_Res = Lop_Res.Sqr(); break;
+
+                case 33: Rop = Rop.Sqr(); break;
+
+            }
+
+        }
+
+        //Записать и вернуть первое число
+
+        public TNumber LeftOp
+
+        {
+
+            set { this.Lop_Res = value; }
+
+            get { return this.Lop_Res; }
+
+        }
+
+        //Записать и вернуть второе число
+
+        public TNumber RightOp
+
+        {
+
+            set { this.Rop = value; }
+
+            get { return this.Rop; }
+
+        }
+
+        //Сброс операции
+
+        public void ResetOper()
+
+        {
+
+            operation = 0;
+
+        }
+
+        //Сброс процессора
+
+        public void ResetProc()
+
+        {
 
             Lop_Res.number = "0";
 
-            Rop.c = 0;
-
-            Rop.p = 10;
+            Lop_Res.PInt = 10;
 
             Rop.number = "0";
 
-            State = OperationState.none;
+            Rop.PInt = 10;
+
+            ResetOper();
 
         }
 
-        public void OpReset()
+        //Изменение состояния
+
+        public int Operation
 
         {
 
-            State = OperationState.none;
+            set { this.operation = value; }
+
+            get { return this.operation; }
 
         }
 
-        public void doOp()
+    }
+
+    class TComplexProcessor
+
+    {
+
+        //Первое и второе число
+
+        private TComplexNumber Lop_Res;
+
+        private TComplexNumber Rop;
+
+        //Операция. 0 - ничего, 1 - "+", 2 - "-", 3 - "*", 4 - "/"
+
+        private int operation;
+
+        //Конструктор
+
+        public TComplexProcessor()
 
         {
 
-            if (State == OperationState.none)
+            Lop_Res = new TComplexNumber(0, 0, 10);
 
-                return;
+            Rop = new TComplexNumber(0, 0, 10);
 
-            if (State == OperationState.add)
-
-                if (Rop.number == "")
-
-                    Lop_Res = (T)Lop_Res.add(Lop_Res);
-
-                else
-
-                    Lop_Res = (T)Lop_Res.add(Rop);
-
-            if (State == OperationState.sub)
-
-                if (Rop.number == "")
-
-                    Lop_Res = (T)Lop_Res.sub(Lop_Res);
-
-                else
-
-                    Lop_Res = (T)Lop_Res.sub(Rop);
-
-            if (State == OperationState.mult)
-
-                if (Rop.number == "")
-
-                    Lop_Res = (T)Lop_Res.mult(Lop_Res);
-
-                else
-
-                    Lop_Res = (T)Lop_Res.mult(Rop);
-
-            if (State == OperationState.div)
-
-                if (Rop.number == "")
-
-                    Lop_Res = (T)Lop_Res.del(Lop_Res);
-
-                else
-
-                    Lop_Res = (T)Lop_Res.del(Rop);
-
-            setRop((T)new TPNumber("", Rop.p.ToString(), Rop.c.ToString()));
-
-           // State = OperationState.none;
+            operation = 0;
 
         }
 
-        public void doFunc(bool right)
+        //Выполнить операцию
+
+        public void ExeuteOperation()
 
         {
 
-            if (State == OperationState.none)
-
-                return;
-
-            if (right)
+            switch (operation)
 
             {
 
-                if (State == OperationState.rev)
+                case 1: Lop_Res = Lop_Res.Summ(Rop); break;
 
-                    Rop = (T)Rop.rev();
+                case 2: Lop_Res = Lop_Res.Sub(Rop); break;
 
-                if (State == OperationState.sqr)
+                case 3: Lop_Res = Lop_Res.Mult(Rop); break;
 
-                    Rop = (T)Rop.sqr();
+                case 4: Lop_Res = Lop_Res.Div(Rop); break;
 
-            }
-
-            else
-
-            {
-
-                if (State == OperationState.rev)
-
-                    Lop_Res = (T)Lop_Res.rev();
-
-                if (State == OperationState.sqr)
-
-                    Lop_Res = (T)Lop_Res.sqr();
+                default: break;
 
             }
 
         }
 
-        public T getLop()
+        //вычислить функцию
+
+        public void CalculateFunction(int n)
 
         {
 
-            return Lop_Res;
+            switch (n)
+
+            {
+
+                // Обратная функция
+
+                case 30: Lop_Res = Lop_Res.Pay(); break;
+
+                // Функция корень
+
+                case 31: Lop_Res = Lop_Res.Sqr(); break;
+
+                case 32: Rop = Rop.Pay(); break;
+
+                case 33: Rop = Rop.Sqr(); break;
+
+            }
 
         }
 
-        public void setLop(T Lop)
+        //Записать и вернуть первое число
+
+        public TComplexNumber LeftOp
 
         {
 
-            Lop_Res = (T)new TPNumber(Lop.number, Lop.p.ToString(), Lop.c.ToString());
+            set { this.Lop_Res = value; }
+
+            get { return this.Lop_Res; }
 
         }
 
-        public T getRop()
+        //Записать и вернуть второе число
+
+        public TComplexNumber RightOp
 
         {
 
-            return Rop;
+            set { this.Rop = value; }
+
+            get { return this.Rop; }
 
         }
 
-        public void setRop(T Rop)
+        //Сброс операции
+
+        public void ResetOper()
 
         {
 
-            this.Rop = (T)new TPNumber(Rop.number, Rop.p.ToString(), Rop.c.ToString());
+            operation = 0;
 
         }
 
-        public OperationState getState()
+        //Сброс процессора
+
+        public void ResetProc()
 
         {
 
-            return State;
+            Lop_Res.NumberDouble = 0;
+
+            Lop_Res.PInt = 10;
+
+            Rop.NumberDouble = 0;
+
+            Rop.PInt = 10;
+
+            ResetOper();
 
         }
 
-        public void setState(OperationState st)
+        //Изменение состояния
+
+        public int Operation
 
         {
 
-            State = st;
+            set { this.operation = value; }
+
+            get { return this.operation; }
+
+        }
+
+    }
+
+    class TFractProcessor
+
+    {
+
+        //Первое и второе число
+
+        private TFractNumber Lop_Res;
+
+        private TFractNumber Rop;
+
+        //Операция. 0 - ничего, 1 - "+", 2 - "-", 3 - "*", 4 - "/"
+
+        private int operation;
+
+        //Конструктор
+
+        public TFractProcessor()
+
+        {
+
+            Lop_Res = new TFractNumber(0, 1, 10);
+
+            Rop = new TFractNumber(0, 1, 10);
+
+            operation = 0;
+
+        }
+
+        //Выполнить операцию
+
+        public void ExeuteOperation()
+
+        {
+
+            switch (operation)
+
+            {
+
+                case 1: Lop_Res = Lop_Res.Summ(Rop); break;
+
+                case 2: Lop_Res = Lop_Res.Sub(Rop); break;
+
+                case 3: Lop_Res = Lop_Res.Mult(Rop); break;
+
+                case 4: Lop_Res = Lop_Res.Div(Rop); break;
+
+                default: break;
+
+            }
+
+        }
+
+        //вычислить функцию
+
+        public void CalculateFunction(int n)
+
+        {
+
+            switch (n)
+
+            {
+
+                // Обратная функция
+
+                case 30: Lop_Res = Lop_Res.Pay(); break;
+
+                // Функция корень
+
+                case 31: Lop_Res = Lop_Res.Sqr(); break;
+
+                case 32: Rop = Rop.Pay(); break;
+
+                case 33: Rop = Rop.Sqr(); break;
+
+            }
+
+        }
+
+        //Записать и вернуть первое число
+
+        public TFractNumber LeftOp
+
+        {
+
+            set { this.Lop_Res = value; }
+
+            get { return this.Lop_Res; }
+
+        }
+
+        //Записать и вернуть второе число
+
+        public TFractNumber RightOp
+
+        {
+
+            set { this.Rop = value; }
+
+            get { return this.Rop; }
+
+        }
+
+        //Сброс операции
+
+        public void ResetOper()
+
+        {
+
+            operation = 0;
+
+        }
+
+        //Сброс процессора
+
+        public void ResetProc()
+
+        {
+
+            Lop_Res.NumberDouble = 0;
+
+            Lop_Res.PInt = 10;
+
+            Rop.NumberDouble = 0;
+
+            Rop.PInt = 10;
+
+            ResetOper();
+
+        }
+
+        //Изменение состояния
+
+        public int Operation
+
+        {
+
+            set { this.operation = value; }
+
+            get { return this.operation; }
 
         }
 

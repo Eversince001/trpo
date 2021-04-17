@@ -61,7 +61,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ЛБР№2\Memory.cs" />
+    <Compile Include="ЛБР№2\TCompexMemory.cs" />
+    <Compile Include="ЛБР№2\TComplexNumber.cs" />
+    <Compile Include="ЛБР№2\TConvert.cs" />
+    <Compile Include="ЛБР№2\TCtrl.cs" />
+    <Compile Include="ЛБР№2\TEditor.cs" />
+    <Compile Include="ЛБР№2\TFractEditor.cs" />
+    <Compile Include="ЛБР№2\TFractMemory.cs" />
+    <Compile Include="ЛБР№2\TFractNumber.cs" />
+    <Compile Include="ЛБР№2\TMemory.cs" />
+    <Compile Include="ЛБР№2\TComplexEditor.cs" />
     <Compile Include="ЛБР№2\TNumber.cs" />
     <Compile Include="ЛБР№2\TProcessor.cs" />
     <Compile Include="Справка.cs">
@@ -88,7 +97,7 @@
     <Compile Include="ЛБР№2\Conver_10_p.cs" />
     <Compile Include="ЛБР№2\Conver_p_10.cs" />
     <Compile Include="ЛБР№2\Editor.cs" />
-    <Compile Include="ЛБР№2\History.cs" />
+    <Compile Include="ЛБР№2\THistory.cs" />
     <EmbeddedResource Include="Справка.resx">
       <DependentUpon>Справка.cs</DependentUpon>
     </EmbeddedResource>

@@ -13,15 +13,14 @@ namespace Лабораторная_работа__2_ТРПО
 {
     public partial class Конвертор : Form
     {
-        //Объект класса Управление.
         private Control_ ctl = new Control_();
-        private TProcessor<TPNumber> proc = new TProcessor<TPNumber>(10);
-        private TProcessor<TPNumber> tmp = new TProcessor<TPNumber>(10);
-        private TPNumber Lop = new TPNumber();
-        private TPNumber Rop = new TPNumber();
-        private TPNumber temp = new TPNumber();
-        private Memory<TPNumber> Mem = new Memory<TPNumber>();
-        private string CurrentNumber = "", intermediate = "";
+
+        private TCtrl ctrl = new TCtrl();
+
+        private int state = 1, ResultState = 0;
+
+        private string First = "", Second = "";
+
 
         public Конвертор()
         {
@@ -31,39 +30,99 @@ namespace Лабораторная_работа__2_ТРПО
         //Обработчик события нажатия командной кнопки.
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (inNumber.Text != "0")
-            {
-                inNumber.Text += "0";
-                CurrentNumber += "0";
-                intermediate = CurrentNumber;
-            }
-
+            Button but = (Button)sender;
+            int j = Convert.ToInt16(but.Tag.ToString());
+            DoCmnd(j);
+            UpdateButtons();
         }
 
         private void DoCmnd(int j)
         {
-            if (j == 19)
+            if (state == 1)
             {
-                //deletezero();
-            }
-            else
-            {
-                if (ctl.St == Control_.State.Converted)
+                if (ResultState == 0)
                 {
-                    //очистить содержимое редактора 
-                    inNumber.Text = ctl.DoCmnd(18, "");
+                    ctrl.processor.LeftOp.number = ctrl.DoCommand(j);
+                    inNumber.Text = ctrl.processor.LeftOp.getNumber();
                 }
-                //выполнить команду редактирования
+                
+                if (ResultState == 1)
+                {
+                    if (inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != '*' && inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '-')
+                    {
+                        ctrl.processor.RightOp.number += j.ToString();
+                        inNumber.Text += j.ToString();
+                    }
+                    else
+                    {
+                        ctrl.processor.RightOp.number = "";
+                        ctrl.processor.RightOp.number += j.ToString();
+                        inNumber.Text += j.ToString();
+                    }
+                }
+                
+                if (ResultState == 2)
+                {
+                    ctrl.processor.LeftOp.number = ctrl.DoCommand(j);
+                    //ctrl.processor.RightOp.NumberString = "";
+                    inNumber.Text = ctrl.processor.LeftOp.getNumber();
+                }
 
+                if (ResultState == 3)
+                {
+                    if (ctrl.processor.RightOp.number != "0")
+                    {
+                        ctrl.editor.State = 1;
+                        for (int i = 0; i < ctrl.processor.RightOp.number.Length; i++)
+                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
 
-                if (inNumber.Text != "0")
-                    inNumber.Text += ctl.DoCmnd(j, j.ToString());
-                else
-                    inNumber.Text = ctl.DoCmnd(j, j.ToString());
+                        ctrl.processor.RightOp.number = ctrl.DoCommand(j);
+                        inNumber.Text += ctrl.processor.RightOp.number;
+                    }
+                    else
+                    {
+                        ctrl.editor.State = 0;
+                        ctrl.processor.LeftOp.number = ctrl.DoCommand(j);
+                        inNumber.Text = ctrl.processor.LeftOp.getNumber();
+                    }
+
+                }
+
+                if (ResultState == 4)
+                {
+                    if (ctrl.processor.RightOp.number != "0")
+                    {
+                        ctrl.editor.State = 1;
+                        for (int i = 0; i < ctrl.processor.RightOp.number.Length; i++)
+                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                        ctrl.processor.RightOp.number = ctrl.DoCommand(j);
+                        inNumber.Text += ctrl.processor.RightOp.number;
+                    }
+                    else
+                    {
+                        ctrl.editor.State = 0;
+                        ctrl.processor.LeftOp.number = ctrl.DoCommand(j);
+                        inNumber.Text = ctrl.processor.LeftOp.getNumber();
+                    }
+                }
+
             }
-        }
-        //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
 
+            if (state == 2)
+            {
+
+            }
+
+            if (state == 3)
+            {
+
+            }
+
+        }
+
+
+        //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
         private void UpdateButtons()
         {
             //просмотреть все компоненты формы
@@ -94,33 +153,43 @@ namespace Лабораторная_работа__2_ТРПО
         //Изменяет значение основания с.сч. исходного числа.
         private void numericUpDown1_ValueChanged_1(object sender, EventArgs e)
         {
-            //Обновить состояние.
             trackBar1.Value = Convert.ToByte(numericUpDown1.Value);
-            //Обновить состояние командных кнопок.
             this.UpdateP1();
         }
         //Выполняет необходимые обновления при смене ос. с.сч. р1.
         private void UpdateP1()
         {
 
-            CurrentNumber = "";
-            intermediate = "";
+            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
+            {
+                if (state == 1)
+                {
+                    ctrl.editor.number = "0";
+                    ctrl.processor.RightOp.number = "0";
+                    ctrl.processor.LeftOp.number = "0";
+                    ctrl.processor.Operation = 0;
+                }
+
+                inNumber.Text = "0";
+            }
+
             NumberCache.Text = "";
-            Mem.clear();
 
             ButtonMC.Enabled = false;
             ButtonMR.Enabled = false;
             ButtonMPlus.Enabled = false;
+            UpdateButtons();
 
-            //Сохранить р1 в объекте управление.
+            ctrl.processor.LeftOp.PInt = trackBar1.Value;
             ctl.Pout = trackBar1.Value;
-            //Обновить состояние командных кнопок.
-            this.UpdateButtons();
 
-            if (inNumber.Text != "0" && !inNumber.Text.Contains("-") && !inNumber.Text.Contains("+") && !inNumber.Text.Contains("/") && !inNumber.Text.Contains("x"))
+
+            if (inNumber.Text != "0" && !inNumber.Text.Contains("-") && !inNumber.Text.Contains("+") && !inNumber.Text.Contains("/") && !inNumber.Text.Contains("*"))
                 inNumber.Text = ctl.DoCmnd(19, inNumber.Text);
             else
                 inNumber.Text = "0";
+
+            ctrl.processor.LeftOp.number = inNumber.Text;
             ctl.Pin = trackBar1.Value;
         }
 
@@ -149,28 +218,7 @@ namespace Лабораторная_работа__2_ТРПО
                 i = (int)e.KeyChar - '0';
             if (e.KeyChar == '.')
             {
-                if (CurrentNumber.Contains("."))
-                    return;
-                if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                {
-                    if (inNumber.Text == "16.")
-                    {
-                        inNumber.Text = "0";
-                        inNumber.Text += ".";
-                        CurrentNumber = inNumber.Text;
-                        intermediate = CurrentNumber;
-                    }
-                    else
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                        inNumber.Text += ".";
-                        CurrentNumber += ".";
-                        intermediate = CurrentNumber;
-                    }
-                }
-                return;
+
             }
             if ((int)e.KeyChar == 8)
                 i = 17;
@@ -180,41 +228,7 @@ namespace Лабораторная_работа__2_ТРПО
             {
                 if (inNumber.Text != "0")
                 {
-                    if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                    {
-                        if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                        {
-                            if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                            Rop.number = CurrentNumber;
-                            Rop.setC(trackBar1.Value);
-                            Rop.setP(trackBar1.Value);
-                            proc.setRop(Rop);
-                            proc.doOp();
-                            inNumber.Text = proc.Lop_Res.number;
-                            intermediate = inNumber.Text;
-                            CurrentNumber = proc.Lop_Res.number;
-                        }
-                    }
-
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '-')
-                        return;
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == 'x' || inNumber.Text[inNumber.Text.Length - 1] == '/')
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    }
-
-                    if (CurrentNumber != "")
-                    if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
-
-                    proc.setState(TProcessor<TPNumber>.OperationState.sub);
-                    Lop.number = CurrentNumber;
-                    CurrentNumber = "";
-                    Lop.setP(trackBar1.Value);
-                    Lop.setC(trackBar1.Value);
-                    proc.setLop(Lop);
-                    inNumber.Text += "-";
+                   
                 }
                 return;
             }
@@ -223,42 +237,7 @@ namespace Лабораторная_работа__2_ТРПО
             {
                 if (inNumber.Text != "0")
                 {
-                    if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                    {
-                        if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                        {
-                            if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                            Rop.number = CurrentNumber;
-                            Rop.setC(trackBar1.Value);
-                            Rop.setP(trackBar1.Value);
-                            proc.setRop(Rop);
-                            proc.doOp();
-                            inNumber.Text = proc.Lop_Res.number;
-                            intermediate = inNumber.Text;
-                            CurrentNumber = proc.Lop_Res.number;
-                        }
-                    }
-
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '+')
-                        return;
-
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == 'x' || inNumber.Text[inNumber.Text.Length - 1] == '/')
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    }
-
-                    if (CurrentNumber != "")
-                    if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
-
-                    proc.setState(TProcessor<TPNumber>.OperationState.add);
-                    Lop.number = CurrentNumber;
-                    CurrentNumber = "";
-                    Lop.setP(trackBar1.Value);
-                    Lop.setC(trackBar1.Value);
-                    proc.setLop(Lop);
-                    inNumber.Text += "+";
+                  
                 }
                 return;
             }
@@ -267,42 +246,7 @@ namespace Лабораторная_работа__2_ТРПО
             {
                 if (inNumber.Text != "0")
                 {
-                    if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                    {
-                        if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                        {
-                            if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                            Rop.number = CurrentNumber;
-                            Rop.setC(trackBar1.Value);
-                            Rop.setP(trackBar1.Value);
-                            proc.setRop(Rop);
-                            proc.doOp();
-                            inNumber.Text = proc.Lop_Res.number;
-                            intermediate = inNumber.Text;
-                            CurrentNumber = proc.Lop_Res.number;
-                        }
-                    }
-
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '/')
-                        return;
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == 'x')
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    }
-
-                    if (CurrentNumber != "")
-                    if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
-
-
-                    proc.setState(TProcessor<TPNumber>.OperationState.div);
-                    Lop.number = CurrentNumber;
-                    CurrentNumber = "";
-                    Lop.setP(trackBar1.Value);
-                    Lop.setC(trackBar1.Value);
-                    proc.setLop(Lop);
-                    inNumber.Text += "/";
+                  
                 }
                     return;
             }
@@ -311,42 +255,7 @@ namespace Лабораторная_работа__2_ТРПО
             {
                 if (inNumber.Text != "0")
                 {
-                    if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                    {
-                        if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                        {
-                            if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                            Rop.number = CurrentNumber;
-                            Rop.setC(trackBar1.Value);
-                            Rop.setP(trackBar1.Value);
-                            proc.setRop(Rop);
-                            proc.doOp();
-                            inNumber.Text = proc.Lop_Res.number;
-                            intermediate = inNumber.Text;
-                            CurrentNumber = proc.Lop_Res.number;
-                        }
-                    }
-
-                    if (inNumber.Text[inNumber.Text.Length - 1] == 'x')
-                        return;
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '/')
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    }
-
-
-                    if (CurrentNumber != "")
-                    if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
-
-                    proc.setState(TProcessor<TPNumber>.OperationState.mult);
-                    Lop.number = CurrentNumber;
-                    CurrentNumber = "";
-                    Lop.setP(trackBar1.Value);
-                    Lop.setC(trackBar1.Value);
-                    proc.setLop(Lop);
-                    inNumber.Text += "x";
+                 
 
                 }
                 return;
@@ -354,94 +263,19 @@ namespace Лабораторная_работа__2_ТРПО
 
             if ((int)e.KeyChar == 61)
             {
-                if (proc.getState() != TProcessor<TPNumber>.OperationState.none)
-                {
-                    if (inNumber.Text[inNumber.Text.Length - 1] != '+' || inNumber.Text[inNumber.Text.Length - 1] != '/' || inNumber.Text[inNumber.Text.Length - 1] != 'x' || inNumber.Text[inNumber.Text.Length - 1] != '-')
-                    {
-
-                        Rop.number = intermediate;
-                        Rop.setC(trackBar1.Value);
-                        Rop.setP(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doOp();
-                        inNumber.Text = proc.Lop_Res.number;
-                        CurrentNumber = inNumber.Text;
-                    }
-                    else
-                    {
-                        CurrentNumber = "";
-                        Rop.number = CurrentNumber;
-                        proc.doOp();
-                        inNumber.Text = proc.Lop_Res.number;
-                    }
-                }
+               
                 return;
             }
 
             if ((int)e.KeyChar == 8)
             {
-                if (inNumber.Text.Length != 1)
-                {
-                    if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == 'x' || inNumber.Text[inNumber.Text.Length - 1] == '-')
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                        CurrentNumber = inNumber.Text;
-                        intermediate = CurrentNumber;
-                    }
-                    else
-                    {
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                        CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                        intermediate = CurrentNumber;
-                    }
-                }
-                else
-                {
-                    inNumber.Text = "0";
-                    CurrentNumber = "";
-                    intermediate = "";
-                }
-                return;
+               
             }
 
             if ((i < ctl.Pin) || (i >= 16))
             {
-                DoCmnd(i);
-                if (i < 10 && i >= 0 )
-                {
-                    CurrentNumber += i;
-                    intermediate = CurrentNumber;
-                }
-                else
-                {
-                    switch (i)
-                    {
-                        case 10:
-                            CurrentNumber += 'A';
-                            intermediate = CurrentNumber;
-                            break;
-                        case 11:
-                            CurrentNumber += 'B';
-                            intermediate = CurrentNumber;
-                            break;
-                        case 12:
-                            CurrentNumber += 'C';
-                            intermediate = CurrentNumber;
-                            break;
-                        case 13:
-                            CurrentNumber += 'D';
-                            intermediate = CurrentNumber;
-                            break;
-                        case 14:
-                            CurrentNumber += 'E';
-                            intermediate = CurrentNumber;
-                            break;
-                        case 15:
-                            CurrentNumber += 'F';
-                            intermediate = CurrentNumber;
-                            break;
-                    }
-                }
+       
+     
             }
         }
 
@@ -461,699 +295,408 @@ namespace Лабораторная_работа__2_ТРПО
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "1";
-                CurrentNumber = "1";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "1";
-                inNumber.Text += "1";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "2";
-                CurrentNumber = "2";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "2";
-                inNumber.Text += "2";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "3";
-                CurrentNumber = "3";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "3";
-                inNumber.Text += "3";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "4";
-                CurrentNumber = "4";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "4";
-                inNumber.Text += "4";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "5";
-                CurrentNumber = "5";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "5";
-                inNumber.Text += "5";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "6";
-                CurrentNumber = "6";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "6";
-                inNumber.Text += "6";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "7";
-                CurrentNumber = "7";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "7";
-                inNumber.Text += "7";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "8";
-                CurrentNumber = "8";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "8";
-                inNumber.Text += "8";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "9";
-                CurrentNumber = "9";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                CurrentNumber += "9";
-                inNumber.Text += "9";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "A";
-                CurrentNumber = "A";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                inNumber.Text += "A";
-                CurrentNumber += "A";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "B";
-                CurrentNumber = "B";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                inNumber.Text += "B";
-                CurrentNumber += "B";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button13_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "C";
-                CurrentNumber = "C";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                inNumber.Text += "C";
-                CurrentNumber += "C";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "D";
-                CurrentNumber = "D";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                inNumber.Text += "D";
-                CurrentNumber += "D";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "E";
-                CurrentNumber = "E";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                inNumber.Text += "E";
-                CurrentNumber += "E";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button16_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text == "0")
-            {
-                inNumber.Text = "F";
-                CurrentNumber = "F";
-                intermediate = CurrentNumber;
-            }
-            else
-            {
-                inNumber.Text += "F";
-                CurrentNumber += "F";
-                intermediate = CurrentNumber;
-            }
+            button1_Click_1(sender, e);
         }
 
         private void button17_Click(object sender, EventArgs e)
         {
-
-            if (CurrentNumber.Contains("."))
-                return;
-            if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
+            if (state == 1 && inNumber.Text[inNumber.Text.Length - 1] != '.')
             {
-                inNumber.Text += ".";
-                CurrentNumber += ".";
-                intermediate = CurrentNumber;
+
+                if (ResultState == 0)
+                {
+                    if (!ctrl.processor.LeftOp.number.Contains('.'))
+                    {
+                        ctrl.processor.LeftOp.number = ctrl.DoCommand(16);
+                        inNumber.Text = ctrl.processor.LeftOp.number;
+                        return;
+                    }
+                }
+
+                if (ResultState == 1)
+                {
+                    if (inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != '*' && inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '-')
+                    {
+                        if (!ctrl.processor.RightOp.number.Contains('.'))
+                        {
+                            ctrl.processor.RightOp.number += ".";
+                            inNumber.Text += ".";
+                        }
+                    }
+                }
             }
+    
+
         }
+
 
         private void button18_Click(object sender, EventArgs e)
         {
             if (inNumber.Text.Length != 1)
             {
-                if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == 'x' || inNumber.Text[inNumber.Text.Length - 1] == '-')
+                if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '-')
                 {
                     inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    CurrentNumber = inNumber.Text;
-                    intermediate = CurrentNumber;
+                    ResultState = 0;
+                    ctrl.processor.Operation = 0;
                 }
                 else
                 {
-                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                    CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                    intermediate = CurrentNumber;
+                    if (ctrl.processor.RightOp.number == "0" || (!inNumber.Text.Contains('/') && !inNumber.Text.Contains('*') && !inNumber.Text.Contains('+') && !inNumber.Text.Contains('-')))
+                    {
+                        ctrl.editor.number = ctrl.editor.number.Remove(ctrl.editor.number.Length - 1);
+                        ctrl.processor.LeftOp.number = ctrl.processor.LeftOp.number.Remove(ctrl.processor.LeftOp.number.Length - 1);
+                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                        return;
+                    }
+
+                    if (ctrl.processor.RightOp.number == "0" && (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-')))
+                    {
+
+                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                        return;
+                    }
+
+                    if (ctrl.processor.RightOp.number != "0")
+                    {
+                        ctrl.processor.RightOp.number = ctrl.processor.RightOp.number.Remove(ctrl.processor.RightOp.number.Length - 1);
+                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                        return;
+                    }
                 }
+
             }
             else
             {
+                if (state == 1)
+                {
+                    ctrl.editor.number = "0";
+                    ctrl.processor.RightOp.number = "0";
+                    ctrl.processor.LeftOp.number = "0";
+                    ctrl.processor.Operation = 0;
+                }
                 inNumber.Text = "0";
-                CurrentNumber = "";
-                intermediate = "";
             }
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
+            if (state == 1)
+            {
+                ctrl.editor.number = "0";
+                ctrl.processor.RightOp.number = "0";
+                ctrl.processor.LeftOp.number = "0";
+                ctrl.processor.Operation = 0;
+            }
+
             inNumber.Text = "0";
-            CurrentNumber = "";
-            intermediate = CurrentNumber;
         }
 
         private void button20_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text[inNumber.Text.Length - 1] == '-')
-            {
-                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                inNumber.Text += "+";
-            }
-
-            if (inNumber.Text[inNumber.Text.Length - 1] == '+')
-            {
-                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                inNumber.Text += "-";
-            }
+            
 
         }
 
         private void Конвертор_Load(object sender, EventArgs e)
         {
-            inNumber.Text = ctl.ed.number;
-            //Основание с.сч. исходного числа р1.
-            trackBar1.Value = ctl.Pin;
-            numericUpDown1.Value = ctl.Pin;
+
             inNumber.Text = "0";
             ButtonMC.Enabled = false;
             ButtonMR.Enabled = false;
             ButtonMPlus.Enabled = false;
+            trackBar1.Value = 10;
+            numericUpDown1.Value = 10;
+
+            //состояния - калькулятор p-ичных чисел
+            state = 1;
+
             //Обновить состояние командных кнопок.
-            this.UpdateButtons();
+            UpdateButtons();
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            if (proc.getState() != TProcessor<TPNumber>.OperationState.none)
+            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
             {
-                if (inNumber.Text[inNumber.Text.Length - 1] != '+' || inNumber.Text[inNumber.Text.Length - 1] != '/' || inNumber.Text[inNumber.Text.Length - 1] != 'x' || inNumber.Text[inNumber.Text.Length - 1] != '-')
-                {
+                ResultState = 2;
 
-                    Rop.number = intermediate;
-                    Rop.setC(trackBar1.Value);
-                    Rop.setP(trackBar1.Value);
-                    proc.setRop(Rop);
-                    proc.doOp();
-                    inNumber.Text = proc.Lop_Res.number;
-                    CurrentNumber = inNumber.Text;
-                }
-                else
-                {
-                    CurrentNumber = "";
-                    Rop.number = CurrentNumber;
-                    proc.doOp();
-                    inNumber.Text = proc.Lop_Res.number;
-                }
+            
+
+                if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4; 
+                if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3; 
+                if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
+
+
+                DoCmnd(40);
+
+                ctrl.processor.RightOp.number = "0";
+
+                ResultState = 0;
             }
         }
 
         private void ButtonPlus_Click(object sender, EventArgs e)
         {
 
-            if (inNumber.Text != "0")
+            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
             {
-                if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                {
-                    if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                    {
-                        if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber =  CurrentNumber.Remove(CurrentNumber.Length - 1);
-                        Rop.number = CurrentNumber;
-                        Rop.setC(trackBar1.Value);
-                        Rop.setP(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doOp();
-                        inNumber.Text = proc.Lop_Res.number;
-                        intermediate = inNumber.Text;
-                        CurrentNumber = proc.Lop_Res.number;
-                    }
-                }
+                ResultState = 2;
 
-                if (inNumber.Text[inNumber.Text.Length - 1] == '+')
-                    return;
 
-                if (inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == 'x' || inNumber.Text[inNumber.Text.Length - 1] == '/')
-                {
-                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                }
 
-                if (CurrentNumber != "")
-                if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
+                if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
 
-                proc.setState(TProcessor<TPNumber>.OperationState.add);
-                Lop.number = CurrentNumber;
-                CurrentNumber = "";
-                Lop.setP(trackBar1.Value);
-                Lop.setC(trackBar1.Value);
-                proc.setLop(Lop);
-                inNumber.Text += "+";
+
+                DoCmnd(40);
+
+                ctrl.processor.RightOp.number = "0";
+
+                ResultState = 0;
             }
 
+            if (ResultState == 0)
+            {
+                inNumber.Text += "+";
+                ResultState = 1;
+            }
+
+            else
+            {
+
+                ctrl.processor.Operation = 1;
+                ResultState = 2;
+                DoCmnd(40);
+                inNumber.Text += "+";
+                ResultState = 1;
+            }
         }
 
         private void ButtonMinus_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text != "0")
+
+            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
             {
-                if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                {
-                    if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                    {
-                        if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                        Rop.number = CurrentNumber; 
-                        Rop.setC(trackBar1.Value);
-                        Rop.setP(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doOp();
-                        inNumber.Text = proc.Lop_Res.number;
-                        intermediate = inNumber.Text;
-                        CurrentNumber = proc.Lop_Res.number;
-                    }
-                }
+                ResultState = 2;
 
-                if (inNumber.Text[inNumber.Text.Length - 1] == '-')
-                    return;
-                if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == 'x' || inNumber.Text[inNumber.Text.Length - 1] == '/')
-                {
-                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                }
 
-                if (CurrentNumber != "")
-                if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
 
-                proc.setState(TProcessor<TPNumber>.OperationState.sub);
-                Lop.number = CurrentNumber;
-                CurrentNumber = "";
-                Lop.setP(trackBar1.Value);
-                Lop.setC(trackBar1.Value);
-                proc.setLop(Lop);
+                if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
+
+
+                DoCmnd(40);
+
+                ctrl.processor.RightOp.number = "0";
+
+                ResultState = 0;
+            }
+
+            if (ResultState == 0)
+            {
                 inNumber.Text += "-";
+                ResultState = 1;
+            }
+
+            else
+            {
+
+                ctrl.processor.Operation = 2;
+                ResultState = 2;
+                DoCmnd(40);
+                inNumber.Text += "-";
+                ResultState = 1;
             }
         }
 
         private void ButtonMult_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text != "0")
+
+            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
             {
-                if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                {
-                    if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                    {
-                        if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                        Rop.number = CurrentNumber;
-                        Rop.setC(trackBar1.Value);
-                        Rop.setP(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doOp();
-                        inNumber.Text = proc.Lop_Res.number;
-                        intermediate = inNumber.Text;
-                        CurrentNumber = proc.Lop_Res.number;
-                    }
-                }
+                ResultState = 2;
 
-                if (inNumber.Text[inNumber.Text.Length - 1] == 'x')
-                    return;
-                if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '/')
-                {
-                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                }
 
-                if (CurrentNumber != "")
-                if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
 
-                proc.setState(TProcessor<TPNumber>.OperationState.mult);
-                Lop.number = CurrentNumber;
-                CurrentNumber = "";
-                Lop.setP(trackBar1.Value);
-                Lop.setC(trackBar1.Value);
-                proc.setLop(Lop);
-                inNumber.Text += "x";
+                if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
 
+
+                DoCmnd(40);
+
+                ctrl.processor.RightOp.number = "0";
+
+                ResultState = 0;
             }
 
+            if (ResultState == 0)
+            {
+                inNumber.Text += "*";
+                ResultState = 1;
+            }
+
+            else
+            {
+                
+                ctrl.processor.Operation = 3;
+                ResultState = 2;
+                DoCmnd(40);
+                inNumber.Text += "*";
+                ResultState = 1;
+            }
         }
 
         private void ButtonDel_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text != "0")
+            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
             {
-                if (inNumber.Text.Contains("-") || inNumber.Text.Contains("+") || inNumber.Text.Contains("/") || inNumber.Text.Contains("x"))
-                {
-                    if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                    {
-                        if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                        Rop.number = CurrentNumber;
-                        Rop.setC(trackBar1.Value);
-                        Rop.setP(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doOp();
-                        inNumber.Text = proc.Lop_Res.number;
-                        intermediate = inNumber.Text;
-                        CurrentNumber = proc.Lop_Res.number;
-                    }
-                }
-
-                if (inNumber.Text[inNumber.Text.Length - 1] == '/')
-                    return;
-                if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == 'x')
-                {
-                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                }
-
-                if (CurrentNumber != "")
-                if (CurrentNumber[CurrentNumber.Length - 1] == '.') CurrentNumber = CurrentNumber.Remove(CurrentNumber.Length - 1);
-                if (inNumber.Text[inNumber.Text.Length - 1] == '.') inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                if (CurrentNumber == inNumber.Text) intermediate = CurrentNumber;
+                ResultState = 2;
 
 
-                proc.setState(TProcessor<TPNumber>.OperationState.div);
-                Lop.number = CurrentNumber;
-                CurrentNumber = "";
-                Lop.setP(trackBar1.Value);
-                Lop.setC(trackBar1.Value);
-                proc.setLop(Lop);
+
+                if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
+
+
+                DoCmnd(40);
+
+                ctrl.processor.RightOp.number = "0";
+
+                ResultState = 0;
+            }
+
+            if (ResultState == 0)
+            {
                 inNumber.Text += "/";
+                ResultState = 1;
+            }
 
+            else
+            {
+
+                ctrl.processor.Operation = 4;
+                ResultState = 2;
+                DoCmnd(40);
+                inNumber.Text += "/";
+                ResultState = 1;
             }
         }
 
         private void ButtonSQR_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text != "0")
-            {
-                if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                {
-                    for (int i = 0; i < CurrentNumber.Length; i++)
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+ 
+            ResultState = 3;
+            DoCmnd(31);
+            ResultState = 0;
 
-                    if (!inNumber.Text.Contains("-") && !inNumber.Text.Contains("+") && !inNumber.Text.Contains("/") && !inNumber.Text.Contains("x"))
-                    {
-                        tmp.State = proc.State;
-                        proc.setState(TProcessor<TPNumber>.OperationState.sqr);
-                        Lop.number = CurrentNumber;
-                        Lop.setP(trackBar1.Value);
-                        Lop.setC(trackBar1.Value);
-                        proc.setLop(Lop);
-                        proc.doFunc(false);
-                        inNumber.Text += proc.Lop_Res.number;
-                        CurrentNumber = inNumber.Text;
-                        Lop.number = CurrentNumber;
-                        proc.State = tmp.State;
-                    }
-                    else
-                    {
-                        tmp.State = proc.State;
-                        proc.setState(TProcessor<TPNumber>.OperationState.sqr);
-                        Rop.number = CurrentNumber;
-                        Rop.setP(trackBar1.Value);
-                        Rop.setC(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doFunc(true);
-                        inNumber.Text += proc.Rop.number;
-                        CurrentNumber = proc.Rop.number;
-                        Rop.number = CurrentNumber;
-                        proc.State = tmp.State;
-                    }
-
-                }
-                else
-                {
-                    tmp.State = proc.State;
-                    inNumber.Text = "";
-                    proc.setState(TProcessor<TPNumber>.OperationState.sqr);
-                    proc.doFunc(false);
-                    inNumber.Text += proc.Lop_Res.number;
-                    CurrentNumber = inNumber.Text;
-                    Lop.number = CurrentNumber;
-                    proc.State = tmp.State;
-                }
-
-
-
-            }
         }
 
         private void Button1Delx_Click(object sender, EventArgs e)
         {
-            if (inNumber.Text != "0")
-            {
-                if (inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != 'x' && inNumber.Text[inNumber.Text.Length - 1] != '-')
-                {
-                    for (int i = 0; i < CurrentNumber.Length; i++)
-                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-
-                    if (!inNumber.Text.Contains("-") && !inNumber.Text.Contains("+") && !inNumber.Text.Contains("/") && !inNumber.Text.Contains("x"))
-                    {
-                        tmp.State = proc.State;
-                        proc.setState(TProcessor<TPNumber>.OperationState.rev);
-                        Lop.number = CurrentNumber;
-                        Lop.setP(trackBar1.Value);
-                        Lop.setC(trackBar1.Value);
-                        proc.setLop(Lop);
-                        proc.doFunc(false);
-                        inNumber.Text += proc.Lop_Res.number;
-                        CurrentNumber = inNumber.Text;
-                        Lop.number = CurrentNumber;
-                        proc.State = tmp.State;
-                    }
-                    else
-                    {
-                        tmp.State = proc.State;
-                        proc.setState(TProcessor<TPNumber>.OperationState.rev);
-                        Rop.number = CurrentNumber;
-                        Rop.setP(trackBar1.Value);
-                        Rop.setC(trackBar1.Value);
-                        proc.setRop(Rop);
-                        proc.doFunc(true);
-                        inNumber.Text += proc.Rop.number;
-                        CurrentNumber = proc.Rop.number;
-                        Rop.number = CurrentNumber;
-                        proc.State = tmp.State;
-                    }
-
-                }
-                else
-                {
-                    tmp.State = proc.State;
-                    inNumber.Text = "";
-                    proc.setState(TProcessor<TPNumber>.OperationState.rev);
-                    proc.doFunc(false);
-                    inNumber.Text += proc.Lop_Res.number;
-                    CurrentNumber = inNumber.Text;
-                    Lop.number = CurrentNumber;
-                    proc.State = tmp.State;
-                }
-
-            }
+            ResultState = 4;
+            DoCmnd(32);
+            ResultState = 0;
         }
 
         private void ButtonMC_Click(object sender, EventArgs e)
         {
-            if (Mem.getFS() == Memory<TPNumber>.FState._on)
-            {
-                NumberCache.Text = "";
-                Mem.clear();
-            }
-
-            ButtonMC.Enabled = false;
-            ButtonMR.Enabled = false;
-            ButtonMPlus.Enabled = false;
+           
         }
 
         private void ButtonMS_Click(object sender, EventArgs e)
         {
 
-            if (inNumber.Text == "0")
-            {
-                temp.number = "0";
-            }
-            else
-            {
-                temp.number = CurrentNumber;
-            }
-            temp.setP(trackBar1.Value);
-            temp.setC(trackBar1.Value);
-            Mem.store(temp);
-
-            NumberCache.Text = temp.number;
-
-            ButtonMC.Enabled = true;
-            ButtonMR.Enabled = true;
-            ButtonMPlus.Enabled = true;
+           
         }
 
         private void ButtonMPlus_Click(object sender, EventArgs e)
         {
-            temp.number = CurrentNumber;
-            temp.setP(trackBar1.Value);
-            temp.setC(trackBar1.Value);
-            Mem.add(temp);
-
-            temp = Mem.getFNumber();
-
-            NumberCache.Text = temp.number;
+           
         }
 
         private void ButtonMR_Click(object sender, EventArgs e)
         {
-            if (Mem.getFS() == Memory<TPNumber>.FState._on)
-            {
-                for (int i = 0; i < CurrentNumber.Length; i++)
-                {
-                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-                }
-
-                temp = Mem.getFNumber();
-                CurrentNumber = temp.number;
-                intermediate = CurrentNumber;
-
-
-                if (inNumber.Text == "0")
-                {
-                    inNumber.Text = CurrentNumber;
-                }
-                else
-                {
-                    inNumber.Text += CurrentNumber;
-                }
-            }
+           
         }
 
         private void вставитьИзБуфераToolStripMenuItem_Click(object sender, EventArgs e)
