@@ -198,20 +198,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         }
 
-        /*Удаление символа, стоящего справа*/
-
-        public string RemoveLastSymbol()
-
-        {
-
-            if (number.Length != 0)
-
-                number = number.Remove(number.Length - 1);
-
-            return number;
-
-        }
-
         /*Очищение*/
 
         public string Clear()

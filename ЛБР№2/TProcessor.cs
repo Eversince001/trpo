@@ -311,9 +311,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            Lop_Res = new TFractNumber(0, 1, 10);
+            Lop_Res = new TFractNumber("0", "1", 10);
 
-            Rop = new TFractNumber(0, 1, 10);
+            Rop = new TFractNumber("0", "1", 10);
 
             operation = 0;
 
@@ -409,11 +409,11 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            Lop_Res.NumberDouble = 0;
+            Lop_Res.number.numer = "0";
 
             Lop_Res.PInt = 10;
 
-            Rop.NumberDouble = 0;
+            Rop.number.numer = "0";
 
             Rop.PInt = 10;
 

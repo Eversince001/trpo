@@ -32,11 +32,11 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            number = "0/0";
+            number = "0|1";
 
             numer = "0";
 
-            denom = "0";
+            denom = "1";
 
             state = 0;
 
@@ -180,7 +180,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             }
 
-            number = numer + "/" + denom;
+            number = numer + "|" + denom;
 
             return number;
 
@@ -200,7 +200,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 numer = numer.Remove(0, 1);
 
-            number = numer + "/" + denom;
+            number = numer + "|" + denom;
 
             return number;
 
@@ -320,7 +320,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             }
 
-            number = numer + "/" + denom;
+            number = numer + "|" + denom;
 
             return number;
 
@@ -334,9 +334,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             numer = "0";
 
-            denom = "0";
+            denom = "1";
 
-            number = "0/1";
+            number = "0|1";
 
             return number;
 

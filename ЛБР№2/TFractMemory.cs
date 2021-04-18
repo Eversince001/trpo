@@ -24,7 +24,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            number = new TFractNumber(0, 1, 10);
+            number = new TFractNumber("0", "1", 10);
 
             state = 0;
 
@@ -76,7 +76,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            number.NumberDouble = 0;
+            number.number.numer = "0";
 
             number.PInt = 10;
 

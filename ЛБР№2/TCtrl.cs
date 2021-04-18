@@ -62,7 +62,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
         /*Выполнить команду*/
 
         public string DoCommand(int n)
-
         {
 
             string str = "";
@@ -136,10 +135,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             }
 
-            if (n == 19)
-
-                str = editor.RemoveLastSymbol();
-
             return str;
 
         }
@@ -150,7 +145,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             string str = "";
 
-            TFractNumber buf = new TFractNumber(0, 0, 10);
+            TFractNumber buf = new TFractNumber("0", "1", 10);
 
             if (n >= 0 && n <= 15)
 
@@ -215,6 +210,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
                 case 30:
 
                 case 31: str = FExecFunc(Feditor.number, n); break;
+
+                case 32: str = FExecFunc(Feditor.number, n); break;
 
                 /*Выполнение операций*/
 
@@ -726,8 +723,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 //Convert.ToInt32(number)
 
-                if (Fprocessor.Operation == 4 && number == "0")/*processor.RightOp.NumberDouble*/
-
+                if (Fprocessor.Operation == 4 && Fprocessor.RightOp.number.numer == "0")/*processor.RightOp.NumberDouble*/
                 {
 
                     Feditor.State = 0;
@@ -1006,11 +1002,11 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 {
 
-                    double buf = Fprocessor.LeftOp.NumberDouble;
+                    double buf = Convert.ToDouble(Fprocessor.LeftOp.number.numer);
 
-                    Fprocessor.LeftOp.NumberDouble = Fprocessor.RightOp.NumberDouble;
+                    Fprocessor.LeftOp.number.numer = Fprocessor.RightOp.number.numer;
 
-                    Fprocessor.RightOp.NumberDouble = buf;
+                    Fprocessor.RightOp.number.numer = buf.ToString();
 
                     rec += Fprocessor.LeftOp.NumberString;
 
@@ -1076,7 +1072,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             {
 
-                Fprocessor.RightOp.NumberDouble = Fprocessor.LeftOp.NumberDouble;
+                Fprocessor.RightOp.number.numer = Fprocessor.LeftOp.number.numer;
 
                 res = Fprocessor.LeftOp.NumberString;
 

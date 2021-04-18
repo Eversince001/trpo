@@ -44,6 +44,20 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         }
 
+
+        private string deleteZero(string str)
+        {
+            if (str.Contains("."))
+            if (str[str.Length - 1] == 'S' || str[str.Length - 1] == '0')
+            {
+                str = str.Remove(str.Length - 1);
+                str = deleteZero(str);
+            }
+
+            return str;
+        }
+
+
         //Сложить
 
         public TNumber Summ(TNumber num)
@@ -52,9 +66,11 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TNumber res = new TNumber(number, p);
 
-            res.number =  conv.P10_To_P((conv.P_To_10(number) + conv.P_To_10(num.number))).ToString();
+            res.number = conv.P10_To_P((conv.P_To_10(number) + conv.P_To_10(num.number)));
 
             res.number = res.number.Replace(',', '.');
+
+            res.number = deleteZero(res.number);
 
             return res;
 
@@ -72,6 +88,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             res.number = res.number.Replace(',', '.');
 
+            res.number = deleteZero(res.number);
+
             return res;
 
         }
@@ -87,6 +105,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
             res.number = conv.P10_To_P((conv.P_To_10(number) - conv.P_To_10(num.number))).ToString();
 
             res.number = res.number.Replace(',', '.');
+
+            res.number = deleteZero(res.number);
 
             return res;
 
@@ -104,6 +124,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             res.number = res.number.Replace(',', '.');
 
+            res.number = deleteZero(res.number);
+
             return res;
 
         }
@@ -120,6 +142,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             res.number = res.number.Replace(',', '.');
 
+            res.number = deleteZero(res.number);
+
             return res;
 
         }
@@ -135,6 +159,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
             res.number = conv.P10_To_P(Math.Pow(conv.P_To_10(number), 2)).ToString();
 
             res.number = res.number.Replace(',', '.');
+
+            res.number = deleteZero(res.number);
 
             return res;
 

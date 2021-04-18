@@ -26,17 +26,17 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            public int numer;
+            public string numer;
 
-            public int denom;
+            public string denom;
 
         }
 
-        NUMBER number = new NUMBER();
+        public NUMBER number = new NUMBER();
 
         //Конструктор
 
-        public TFractNumber(int num, int den, int bas)
+        public TFractNumber(string num, string den, int bas)
 
         {
 
@@ -64,19 +64,19 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TFractNumber res = new TFractNumber(number.numer, number.denom, p);
 
-            res.number.numer = number.numer * num.number.denom + num.number.numer * number.denom;
+            res.number.numer = (Convert.ToInt32(number.numer) * Convert.ToInt32(num.number.denom) + Convert.ToInt32(num.number.numer) * Convert.ToInt32(number.denom)).ToString();
 
-            res.number.denom = number.denom * num.number.denom;
+            res.number.denom = (Convert.ToInt32(number.denom) * Convert.ToInt32(num.number.denom)).ToString();
 
-            int nod = (int)Nod(res.number.numer, res.number.denom);
+            int nod = (int)Nod(Convert.ToInt32(res.number.numer), Convert.ToInt32(res.number.denom));
 
             if (nod != 0)
 
             {
 
-                res.number.numer /= nod;
+                res.number.numer = (Convert.ToInt32(res.number.numer) / nod).ToString();
 
-                res.number.denom /= nod;
+                res.number.denom = (Convert.ToInt32(res.number.denom) / nod).ToString();
 
             }
 
@@ -110,19 +110,18 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TFractNumber res = new TFractNumber(number.numer, number.denom, p);
 
-            res.number.numer = number.numer * num.number.numer;
+            res.number.numer = (Convert.ToInt32(number.numer) * Convert.ToInt32(num.number.numer)).ToString();
 
-            res.number.denom = number.denom * num.number.denom;
+            res.number.denom = (Convert.ToInt32(number.denom) * Convert.ToInt32(num.number.denom)).ToString();
 
-            int nod = (int)Nod(res.number.numer, res.number.denom);
+            int nod = (int)Nod(Convert.ToInt32(res.number.numer), Convert.ToInt32(res.number.denom));
 
             if (nod != 0)
 
             {
+                res.number.numer = (Convert.ToInt32(res.number.numer) / nod).ToString();
 
-                res.number.numer /= nod;
-
-                res.number.denom /= nod;
+                res.number.denom = (Convert.ToInt32(res.number.denom) / nod).ToString();
 
             }
 
@@ -138,19 +137,18 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TFractNumber res = new TFractNumber(number.numer, number.denom, p);
 
-            res.number.numer = number.numer * num.number.denom - num.number.numer * number.denom;
+            res.number.numer = (Convert.ToInt32(number.numer) * Convert.ToInt32(num.number.denom) - Convert.ToInt32(num.number.numer) * Convert.ToInt32(number.denom)).ToString();
 
-            res.number.denom = number.denom * num.number.denom;
+            res.number.denom = (Convert.ToInt32(number.denom) * Convert.ToInt32(num.number.denom)).ToString();
 
-            int nod = (int)Nod(Math.Abs(res.number.numer), Math.Abs(res.number.denom));
+            int nod = (int)Nod(Math.Abs(Convert.ToInt32(res.number.numer)), Math.Abs(Convert.ToInt32(res.number.denom)));
 
             if (nod > 0)
 
             {
+                res.number.numer = (Convert.ToInt32(res.number.numer) / nod).ToString();
 
-                res.number.numer /= nod;
-
-                res.number.denom /= nod;
+                res.number.denom = (Convert.ToInt32(res.number.denom) / nod).ToString();
 
             }
 
@@ -166,19 +164,19 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TFractNumber res = new TFractNumber(number.numer, number.denom, p);
 
-            res.number.numer = number.numer * num.number.denom;
+            res.number.numer = (Convert.ToInt32(number.numer) * Convert.ToInt32(num.number.denom)).ToString();
 
-            res.number.denom = number.denom * num.number.numer;
+            res.number.denom = (Convert.ToInt32(number.denom) * Convert.ToInt32(num.number.numer)).ToString();
 
-            int nod = (int)Nod(res.number.numer, res.number.denom);
+            int nod = (int)Nod(Convert.ToInt32(res.number.numer), Convert.ToInt32(res.number.denom));
 
             if (nod != 0)
 
             {
 
-                res.number.numer /= nod;
+                res.number.numer = (Convert.ToInt32(res.number.numer) / nod).ToString();
 
-                res.number.denom /= nod;
+                res.number.denom = (Convert.ToInt32(res.number.denom) / nod).ToString();
 
             }
 
@@ -194,22 +192,21 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TFractNumber res = new TFractNumber(number.numer, number.denom, p);
 
-            int denom = number.denom;
+            int denom = Convert.ToInt32(number.denom);
 
             res.number.denom = number.numer;
 
             res.number.numer = number.denom;
 
-            int nod = (int)Nod(res.number.numer, res.number.denom);
+            int nod = (int)Nod(Convert.ToInt32(res.number.numer), Convert.ToInt32(res.number.denom));
 
             if (nod != 0)
 
             {
 
-                res.number.numer /= nod;
+                res.number.numer = (Convert.ToInt32(res.number.numer) / nod).ToString();
 
-                res.number.denom /= nod;
-
+                res.number.denom = (Convert.ToInt32(res.number.denom) / nod).ToString();
             }
 
             return res;
@@ -224,19 +221,18 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TFractNumber res = new TFractNumber(number.numer, number.denom, p);
 
-            res.number.numer = number.numer * number.numer;
+            res.number.numer = (Convert.ToInt32(number.numer) * Convert.ToInt32(number.numer)).ToString();
 
-            res.number.denom = number.denom * number.denom;
+            res.number.denom = (Convert.ToInt32(number.denom) * Convert.ToInt32(number.denom)).ToString();
 
-            int nod = (int)Nod(res.number.numer, res.number.denom);
+            int nod = (int)Nod(Convert.ToInt32(res.number.numer), Convert.ToInt32(res.number.denom));
 
             if (nod != 0)
 
             {
+                res.number.numer = (Convert.ToInt32(res.number.numer) / nod).ToString();
 
-                res.number.numer /= nod;
-
-                res.number.denom /= nod;
+                res.number.denom = (Convert.ToInt32(res.number.denom) / nod).ToString();
 
             }
 
@@ -256,41 +252,24 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         }
 
-        //Установить и получить число числом
-
-        public double NumberDouble
-
-        {
-
-            set { this.number.numer = (int)value; }
-
-            get { return this.number.numer; }
-
-        }
-
-        //Установить и получить число строкой
 
         public string NumberString
-
         {
-
             set
 
             {
 
-                var str = value.Split('/');
+                var str = value.Split('|');
 
-                number.numer = Convert.ToInt32(str[0]);
+                number.numer = str[0];
 
-                number.denom = Convert.ToInt32(str[1]);
+                number.denom = str[1];
 
             }
-
             get
-
             {
 
-                return number.numer.ToString() + "/" + number.denom.ToString();
+                return number.numer.ToString() + "|" + number.denom.ToString();
 
             }
 
