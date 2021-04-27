@@ -237,7 +237,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             string str = "";
 
-            TComplexNumber buf = new TComplexNumber(0, 0, 10);
+            TComplexNumber buf = new TComplexNumber("0", "0", 10);
 
             if (n >= 0 && n <= 15)
 
@@ -302,6 +302,8 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
                 case 30:
 
                 case 31: str = CExecFunc(Ceditor.number, n); break;
+
+                case 32: str = CExecFunc(Ceditor.number, n); break;
 
                 /*Выполнение операций*/
 

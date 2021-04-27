@@ -167,9 +167,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            Lop_Res = new TComplexNumber(0, 0, 10);
+            Lop_Res = new TComplexNumber("0", "0", 10);
 
-            Rop = new TComplexNumber(0, 0, 10);
+            Rop = new TComplexNumber("0", "0", 10);
 
             operation = 0;
 

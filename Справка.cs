@@ -19,7 +19,6 @@ namespace Лабораторная_работа__2_ТРПО
             this.labelVersion.Text = String.Format("Версия {0}", "1.0");
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
-            this.textBoxDescription.Text = AssemblyDescription;
         }
 
         #region Методы доступа к атрибутам сборки
@@ -115,11 +114,6 @@ namespace Лабораторная_работа__2_ТРПО
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void textBoxDescription_TextChanged(object sender, EventArgs e)
-        {
-            textBoxDescription.Text = "Инструкция по работе с приложением:" + Environment.NewLine + "1.Необходимо выбрать систему счисления, в которой вы хотите проводить вычисления." + Environment.NewLine + "2.Ввести выражение, которые нужно вычислить." + Environment.NewLine + "3. Нажать"  + " '=' " + " для получения результата.";
         }
 
         private void Справка_Load(object sender, EventArgs e)

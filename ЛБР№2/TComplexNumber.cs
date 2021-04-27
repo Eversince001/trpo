@@ -26,9 +26,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            public double re;
+            public string re;
 
-            public double im;
+            public string im;
 
         };
 
@@ -36,7 +36,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         //Конструктор
 
-        public TComplexNumber(double re, double im, int bas)
+        public TComplexNumber(string re, string im, int bas)
 
         {
 
@@ -66,9 +66,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TComplexNumber res = new TComplexNumber(number.re, number.im, p);
 
-            res.number.re = number.re + num.number.re;
+            res.number.re = (Convert.ToDouble(number.re) + Convert.ToDouble(num.number.re)).ToString();
 
-            res.number.im = number.im + num.number.im;
+            res.number.im = (Convert.ToDouble(number.im) + Convert.ToDouble(num.number.im)).ToString();
 
             return res;
 
@@ -82,9 +82,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TComplexNumber res = new TComplexNumber(number.re, number.im, p);
 
-            res.number.re = number.re * num.number.re - number.im * num.number.im;
+            res.number.re = (Convert.ToDouble(number.re) * Convert.ToDouble(num.number.re) - Convert.ToDouble(number.im) * Convert.ToDouble(num.number.im)).ToString();
 
-            res.number.im = number.re * num.number.im + number.im * num.number.re;
+            res.number.im = (Convert.ToDouble(number.re) * Convert.ToDouble(num.number.im) + Convert.ToDouble(number.im) * Convert.ToDouble(num.number.re)).ToString();
 
             return res;
 
@@ -98,9 +98,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TComplexNumber res = new TComplexNumber(number.re, number.im, p);
 
-            res.number.re = number.re - num.number.re;
+            res.number.re = (Convert.ToDouble(number.re) - Convert.ToDouble(num.number.re)).ToString();
 
-            res.number.im = number.im - num.number.im;
+            res.number.im = (Convert.ToDouble(number.im) - Convert.ToDouble(num.number.im)).ToString();
 
             return res;
 
@@ -114,9 +114,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TComplexNumber res = new TComplexNumber(number.re, number.im, p);
 
-            res.number.re = (number.re * num.number.re + number.im * num.number.im) / (num.number.re * num.number.re + num.number.im * num.number.im);
+            res.number.re = ((Convert.ToDouble(number.re) * Convert.ToDouble(num.number.re) + Convert.ToDouble(number.im) * Convert.ToDouble(num.number.im)) / (Convert.ToDouble(num.number.re) * Convert.ToDouble(num.number.re) + Convert.ToDouble(num.number.im) * Convert.ToDouble(num.number.im))).ToString();
 
-            res.number.im = (number.im * num.number.re - number.re * num.number.im) / (num.number.re * num.number.re + num.number.im * num.number.im);
+            res.number.im = ((Convert.ToDouble(number.im) * Convert.ToDouble(num.number.re) - Convert.ToDouble(number.re) * Convert.ToDouble(num.number.im)) / (Convert.ToDouble(num.number.re) * Convert.ToDouble(num.number.re) + Convert.ToDouble(num.number.im) * Convert.ToDouble(num.number.im))).ToString();
 
             return res;
 
@@ -130,9 +130,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TComplexNumber res = new TComplexNumber(number.re, number.im, p);
 
-            res.number.re = (number.re) / (number.re * number.re + number.im * number.im);
+            res.number.re = ((Convert.ToDouble(number.re) / (Convert.ToDouble(number.re) * Convert.ToDouble(number.re) + Convert.ToDouble(number.im) * Convert.ToDouble(number.im)))).ToString();
 
-            res.number.im = (-number.im) / (number.re * number.re + number.im * number.im);
+            res.number.im = ((Convert.ToDouble(number.im) * (-1)) / (Convert.ToDouble(number.re) * Convert.ToDouble(number.re) + Convert.ToDouble(number.im) * Convert.ToDouble(number.im))).ToString();
 
             return res;
 
@@ -146,9 +146,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
             TComplexNumber res = new TComplexNumber(number.re, number.im, p);
 
-            res.number.re = number.re * number.re - number.im * number.im;
+            res.number.re = (Convert.ToDouble(number.re) * Convert.ToDouble(number.re) - Convert.ToDouble(number.im) * Convert.ToDouble(number.im)).ToString();
 
-            res.number.im = number.re * number.im + number.im * number.re;
+            res.number.im = (Convert.ToDouble(number.re) * Convert.ToDouble(number.im) + Convert.ToDouble(number.im) * Convert.ToDouble(number.re)).ToString();
 
             return res;
 
@@ -172,9 +172,9 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            set { this.number.re = value; }
+            set { this.number.re = value.ToString(); }
 
-            get { return this.number.re; }
+            get { return Convert.ToDouble(this.number.re); }
 
         }
 
@@ -192,7 +192,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 if (p != 10)
 
-                    number.re = conv.P_To_10(value);
+                    number.re = conv.P_To_10(value).ToString();
 
                 else
 
@@ -236,11 +236,11 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                     }
 
-                    number.re = Convert.ToDouble(str[0]);
+                    number.re = str[0];
 
                     str[1] = str[1].Remove(str[1].Length - 1, 1);
 
-                    number.im = Convert.ToDouble(str[1]);
+                    number.im = str[1];
 
                     if (value == "")
 
@@ -256,13 +256,18 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 conv.SetP = p;
 
-                if (number.im >= 0)
-
-                    return number.re + "+" + number.im + "i";
+                if (number.im.Length > 0)
+                {
+                    if (Convert.ToDouble(number.im) >= 0)
+                        return number.re + "+" + number.im + "i";
+                }
 
                 else
 
-                    return number.re.ToString() + number.im.ToString() + "i";
+                    return number.re + number.im + "i";
+
+
+                return "";
 
             }
 

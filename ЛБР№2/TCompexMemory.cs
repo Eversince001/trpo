@@ -24,7 +24,7 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         {
 
-            number = new TComplexNumber(0, 0, 10);
+            number = new TComplexNumber("0", "0", 10);
 
             state = 0;
 
