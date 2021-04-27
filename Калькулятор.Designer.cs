@@ -160,6 +160,7 @@ namespace Лабораторная_работа__2_ТРПО
             this.комплесныеЧислаToolStripMenuItem.Name = "комплесныеЧислаToolStripMenuItem";
             this.комплесныеЧислаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.комплесныеЧислаToolStripMenuItem.Text = "комплесные числа";
+            this.комплесныеЧислаToolStripMenuItem.Click += new System.EventHandler(this.комплесныеЧислаToolStripMenuItem_Click);
             // 
             // numericUpDown1
             // 

@@ -180,7 +180,7 @@ namespace Лабораторная_работа__2_ТРПО
                             }
                         }
 
-                        if (divState == 1)
+                        else
                         {
                             if (ctrl.Fprocessor.RightOp.number.denom == "1" && divState1 != 1)
                             {
@@ -267,7 +267,69 @@ namespace Лабораторная_работа__2_ТРПО
 
             if (state == 3)
             {
+                if (ResultState == 0)
+                {
+                    if (divState == 0)
+                    {
 
+                        ctrl.Cprocessor.LeftOp.NumberString = ctrl.DoCommandComplex(j);
+
+                    }
+
+                    if (divState == 1)
+                    {
+                        ctrl.Cprocessor.LeftOp.number.im += j;
+                    }
+
+                    inNumber.Text = ctrl.Cprocessor.LeftOp.NumberString;
+
+                }
+
+                if (ResultState == 1)
+                {
+                    if (inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-')
+                    {
+                        ctrl.Ceditor.re = 0.ToString(); ctrl.Ceditor.im = 0.ToString();
+                        ctrl.Cprocessor.RightOp.NumberString = ctrl.DoCommandComplex(j);
+                        inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                    }
+                    else
+                    {
+                        if (divState == 0)
+                        {
+                            ctrl.Cprocessor.RightOp.NumberString = ctrl.DoCommandComplex(j);
+
+                            for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length - 1; i++)
+                            {
+                                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                            }
+                        }
+
+                        else
+                        {
+                            if (ctrl.Fprocessor.RightOp.number.denom == "1" && divState1 != 1)
+                            {
+                                ctrl.Fprocessor.RightOp.number.denom = ctrl.Fprocessor.RightOp.number.denom.Remove(ctrl.Fprocessor.RightOp.number.denom.Length - 1);
+                                for (int i = 0; i < ctrl.Fprocessor.RightOp.NumberString.Length + 1; i++)
+                                {
+                                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                                }
+                                ctrl.Fprocessor.RightOp.number.denom += j.ToString();
+                                divState1 = 1;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < ctrl.Fprocessor.RightOp.NumberString.Length; i++)
+                                {
+                                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                                }
+                                ctrl.Fprocessor.RightOp.number.denom += j.ToString();
+                            }
+                        }
+
+                        inNumber.Text += ctrl.Fprocessor.RightOp.NumberString;
+                    }
+                }
             }
 
         }
@@ -546,7 +608,33 @@ namespace Лабораторная_работа__2_ТРПО
                     }
                 }
             }
-    
+
+            if (state == 3 && inNumber.Text[inNumber.Text.Length - 1] != '.')
+            {
+
+                if (ResultState == 0)
+                {
+                    if (!ctrl.processor.LeftOp.number.Contains('.'))
+                    {
+                        ctrl.processor.LeftOp.number = ctrl.DoCommand(16);
+                        inNumber.Text = ctrl.processor.LeftOp.number;
+                        return;
+                    }
+                }
+
+                if (ResultState == 1)
+                {
+                    if (inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != '*' && inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '-')
+                    {
+                        if (!ctrl.processor.RightOp.number.Contains('.'))
+                        {
+                            ctrl.processor.RightOp.number += ".";
+                            inNumber.Text += ".";
+                        }
+                    }
+                }
+            }
+
 
         }
 
@@ -708,7 +796,7 @@ namespace Лабораторная_работа__2_ТРПО
         {
             if (state == 1)
             {
-                if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
+                if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
                 {
                     ResultState = 2;
 
@@ -717,7 +805,7 @@ namespace Лабораторная_работа__2_ТРПО
                     if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
                     if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
                     if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
-                    if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
+                    if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.processor.Operation = 2;
 
 
                     DoCmnd(40);
@@ -783,6 +871,46 @@ namespace Лабораторная_работа__2_ТРПО
 
                 return;
             }
+
+            if (state == 3)
+            {
+                if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                {
+                    ResultState = 2;
+
+
+
+                    if (inNumber.Text.Contains('/')) ctrl.Cprocessor.Operation = 4;
+                    if (inNumber.Text.Contains('*')) ctrl.Cprocessor.Operation = 3;
+                    if (inNumber.Text.Contains('+')) ctrl.Cprocessor.Operation = 1;
+                    if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                        if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                            ctrl.Cprocessor.Operation = 2;
+
+
+                    DoCmnd(40);
+
+                    ResultState = 0;
+                }
+
+                if (ResultState == 0)
+                {
+                    inNumber.Text += "+";
+                    ResultState = 1;
+                }
+
+                else
+                {
+                    ResultState = 2;
+                    DoCmnd(40);
+                    inNumber.Text += "+";
+                    ResultState = 1;
+                }
+
+                ctrl.Cprocessor.Operation = 1;
+
+                return;
+            }
         }
 
         private void ButtonMinus_Click(object sender, EventArgs e)
@@ -799,7 +927,7 @@ namespace Лабораторная_работа__2_ТРПО
                     if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
                     if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
                     if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
-                    if (inNumber.Text.Contains('-')) ctrl.processor.Operation = 2;
+                    if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.processor.Operation = 2;
 
 
                     DoCmnd(40);
@@ -974,6 +1102,7 @@ namespace Лабораторная_работа__2_ТРПО
                 }
                 ctrl.processor.Operation = 4;
             }
+
             if (state == 2)
             {
                 if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
@@ -1058,7 +1187,10 @@ namespace Лабораторная_работа__2_ТРПО
 
             if (state == 3)
             {
-
+                trackBar1.Enabled = true;
+                numericUpDown1.Enabled = true;
+                button10.Enabled = false;
+                ctrl.Cprocessor.Operation = 0;
             }
 
             state = 1;
@@ -1078,6 +1210,19 @@ namespace Лабораторная_работа__2_ТРПО
             inNumber.Text = Clipboard.GetText();
         }
 
+        private void комплесныеЧислаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            state = 3;
+            trackBar1.Enabled = false;
+            numericUpDown1.Enabled = false;
+            trackBar1.Value = 10;
+            button10.Enabled = true;
+            numericUpDown1.Value = 10;
+            UpdateButtons();
+            inNumber.Text = "0";
+            button10.Text = "i";
+        }
+
         private void button10_Click_1(object sender, EventArgs e)
         {
             if (divState == 0) divState = 1;
@@ -1094,14 +1239,14 @@ namespace Лабораторная_работа__2_ТРПО
             numericUpDown1.Value = 10;
             UpdateButtons();
             inNumber.Text = "0|1";
+            button10.Text = "|";
+
         }
 
         private void копироватьВБуферToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(inNumber.Text);
         }
-
-
 
     }
 }
