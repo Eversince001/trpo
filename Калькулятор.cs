@@ -349,7 +349,7 @@ namespace Лабораторная_работа__2_ТРПО
 
                 if (ResultState == 3)
                 {
-                    if (ctrl.Cprocessor.RightOp.NumberString != "0+0i" && (inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '+' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '-'))
+                    if (ctrl.Cprocessor.RightOp.NumberString != "0+0i" && (inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length - 1] == '+' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length - 1] == '-'))
                     {
                         ctrl.Ceditor.State = 1;
                         ctrl.Ceditor.number = ctrl.Cprocessor.RightOp.NumberString;
@@ -370,7 +370,7 @@ namespace Лабораторная_работа__2_ТРПО
 
                 if (ResultState == 4)
                 {
-                    if (ctrl.Cprocessor.RightOp.NumberString != "0+0i" && (inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '+' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '-'))
+                    if (ctrl.Cprocessor.RightOp.NumberString != "0+0i" && (inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length - 1] == '+' || inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length - 1] == '-'))
                     {
                         ctrl.Ceditor.State = 1;
                         ctrl.Ceditor.number = ctrl.Cprocessor.RightOp.NumberString;
@@ -432,18 +432,28 @@ namespace Лабораторная_работа__2_ТРПО
         private void UpdateP1()
         {
 
-            if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
-            {
-                if (state == 1)
-                {
-                    ctrl.editor.number = "0";
-                    ctrl.processor.RightOp.number = "0";
-                    ctrl.processor.LeftOp.number = "0";
-                    ctrl.processor.Operation = 0;
-                }
+            //if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+            //{
+            //    if (state == 1)
+            //    {
+            //        ctrl.editor.number = "0";
+            //        ctrl.processor.RightOp.number = "0";
+            //        ctrl.processor.LeftOp.number = "0";
+            //        ctrl.processor.Operation = 0;
+            //    }
 
-                inNumber.Text = "0";
+            //    inNumber.Text = "0";
+            //}
+
+            if (state == 1)
+            {
+                ctrl.editor.number = "0";
+                ctrl.processor.RightOp.number = "0";
+                ctrl.processor.LeftOp.number = "0";
+                ctrl.processor.Operation = 0;
             }
+
+            inNumber.Text = "0";
 
             NumberCache.Text = "";
 
@@ -453,16 +463,17 @@ namespace Лабораторная_работа__2_ТРПО
             UpdateButtons();
 
             ctrl.processor.LeftOp.PInt = trackBar1.Value;
-            ctl.Pout = trackBar1.Value;
+
+            //ctl.Pout = trackBar1.Value;
 
 
-            if (inNumber.Text != "0" && !inNumber.Text.Contains("-") && !inNumber.Text.Contains("+") && !inNumber.Text.Contains("/") && !inNumber.Text.Contains("*"))
-                inNumber.Text = ctl.DoCmnd(19, inNumber.Text);
-            else
-                inNumber.Text = "0";
+            //if (inNumber.Text != "0" && !inNumber.Text.Contains("-") && !inNumber.Text.Contains("+") && !inNumber.Text.Contains("/") && !inNumber.Text.Contains("*"))
+            //    inNumber.Text = ctl.DoCmnd(19, inNumber.Text);
+            //else
+            //    inNumber.Text = "0";
 
-            ctrl.processor.LeftOp.number = inNumber.Text;
-            ctl.Pin = trackBar1.Value;
+            //ctrl.processor.LeftOp.number = inNumber.Text;
+            //ctl.Pin = trackBar1.Value;
         }
 
         //Пункт меню Выход.
@@ -482,72 +493,734 @@ namespace Лабораторная_работа__2_ТРПО
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
            int i = -1;
+
             if (e.KeyChar >= 'A' && e.KeyChar <= 'F')
                 i = (int)e.KeyChar - 'A' + 10;
+
             if (e.KeyChar >= 'a' && e.KeyChar <= 'f')
                 i = (int)e.KeyChar - 'a' + 10;
+
             if (e.KeyChar >= '0' && e.KeyChar <= '9')
                 i = (int)e.KeyChar - '0';
+
             if (e.KeyChar == '.')
             {
+                if (state == 1 && inNumber.Text[inNumber.Text.Length - 1] != '.')
+                {
+
+                    if (ResultState == 0)
+                    {
+                        if (!ctrl.processor.LeftOp.number.Contains('.'))
+                        {
+                            ctrl.processor.LeftOp.number = ctrl.DoCommand(16);
+                            inNumber.Text = ctrl.processor.LeftOp.number;
+                            return;
+                        }
+                    }
+
+                    if (ResultState == 1)
+                    {
+                        if (inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != '*' && inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '-')
+                        {
+                            if (!ctrl.processor.RightOp.number.Contains('.'))
+                            {
+                                ctrl.processor.RightOp.number += ".";
+                                inNumber.Text += ".";
+                            }
+                        }
+                    }
+                }
+
+                if (state == 3 && inNumber.Text[inNumber.Text.Length - 1] != '.')
+                {
+
+                    if (ResultState == 0)
+                    {
+                        if (divState == 0)
+                        {
+                            if (!ctrl.Cprocessor.LeftOp.number.re.Contains(','))
+                            {
+                                ctrl.Ceditor.re = ctrl.Ceditor.re.Insert(ctrl.Cprocessor.LeftOp.NumberString.Length - (ctrl.Cprocessor.LeftOp.number.im.Length + 2), ",");
+                                ctrl.Cprocessor.LeftOp.NumberString = ctrl.Cprocessor.LeftOp.NumberString.Insert(ctrl.Cprocessor.LeftOp.NumberString.Length - (ctrl.Cprocessor.LeftOp.number.im.Length + 2), ",");
+                                inNumber.Text = ctrl.Cprocessor.LeftOp.NumberString;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (!ctrl.Cprocessor.LeftOp.number.im.Contains(','))
+                            {
+                                ctrl.Cprocessor.LeftOp.number.im += ",";
+                                ctrl.Ceditor.im = ctrl.Cprocessor.LeftOp.number.im;
+                                inNumber.Text = ctrl.Cprocessor.LeftOp.NumberString;
+                                return;
+                            }
+                        }
+                    }
+
+                    if (ResultState == 1)
+                    {
+                        if (inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != '*' && inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '-')
+                        {
+                            if (divState == 0)
+                            {
+                                if (!ctrl.Cprocessor.RightOp.number.re.Contains(','))
+                                {
+                                    for (int j = 0; j < ctrl.Cprocessor.RightOp.NumberString.Length; j++)
+                                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                                    ctrl.Ceditor.re = ctrl.Ceditor.re.Insert(ctrl.Cprocessor.RightOp.NumberString.Length - (ctrl.Cprocessor.RightOp.number.im.Length + 2), ",");
+                                    ctrl.Cprocessor.RightOp.NumberString = ctrl.Cprocessor.RightOp.NumberString.Insert(ctrl.Cprocessor.RightOp.NumberString.Length - (ctrl.Cprocessor.RightOp.number.im.Length + 2), ",");
+
+
+                                    inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (!ctrl.Cprocessor.RightOp.number.im.Contains(','))
+                                {
+                                    for (int j = 0; j < ctrl.Cprocessor.RightOp.NumberString.Length; j++)
+                                        inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                                    ctrl.Cprocessor.RightOp.number.im += ",";
+                                    ctrl.Ceditor.im = ctrl.Cprocessor.RightOp.number.im;
+
+                                    inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
 
             }
+
             if ((int)e.KeyChar == 8)
                 i = 17;
+
+            if ((int)e.KeyChar == 92 || (int)e.KeyChar == 105 && state != 1)
+            {
+                if (divState == 0) divState = 1;
+                else divState = 0;
+            }
+
             if ((int)e.KeyChar == 13)
                 i = 19;
+
             if ((int)e.KeyChar == 45)//minus
             {
-                if (inNumber.Text != "0")
+                if (state == 1)
                 {
-                   
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-'))
+                    {
+                        ResultState = 2;
+
+
+
+                        if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.processor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "-";
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "-";
+                        ResultState = 1;
+                    }
+
+                    ctrl.processor.Operation = 2;
+
+                    return;
                 }
-                return;
+
+                if (state == 2)
+                {
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
+
+                        if (inNumber.Text.Contains('/')) ctrl.Fprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Fprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.Fprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.Fprocessor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "-";
+                        divState = 0;
+                        divState1 = 0;
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "-";
+                        ResultState = 1;
+                    }
+
+                    ctrl.Fprocessor.Operation = 2;
+
+                    return;
+                }
+
+                if (state == 3)
+                {
+                    ctrl.Cprocessor.Operation = 0;
+
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+
+                        ResultState = 2;
+
+                        if (inNumber.Text.Contains('/')) ctrl.Cprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Cprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+'))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 2;
+
+                        if (ctrl.Cprocessor.Operation != 0)
+                            DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "-";
+                        ResultState = 1;
+                        divState = 0;
+                        divState1 = 0;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "-";
+                        ResultState = 1;
+                    }
+
+                    ctrl.Cprocessor.Operation = 2;
+
+                    return;
+                }
             }
 
             if ((int)e.KeyChar == 43)//plus
             {
-                if (inNumber.Text != "0")
+                if (state == 1)
                 {
-                  
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
+
+
+
+                        if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.processor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "+";
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "+";
+                        ResultState = 1;
+                    }
+
+                    ctrl.processor.Operation = 1;
+
+                    return;
                 }
-                return;
+
+                if (state == 2)
+                {
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
+
+
+
+                        if (inNumber.Text.Contains('/')) ctrl.Fprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Fprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.Fprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.Fprocessor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "+";
+                        divState = 0;
+                        divState1 = 0;
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "+";
+                        ResultState = 1;
+                    }
+
+                    ctrl.Fprocessor.Operation = 1;
+
+                    return;
+                }
+
+                if (state == 3)
+                {
+                    ctrl.Cprocessor.Operation = 0;
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+
+                        ResultState = 2;
+
+                        if (inNumber.Text.Contains('/')) ctrl.Cprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Cprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+'))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 2;
+
+                        if (ctrl.Cprocessor.Operation != 0)
+                            DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "+";
+                        ResultState = 1;
+                        divState = 0;
+                        divState1 = 0;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "+";
+                        ResultState = 1;
+                    }
+
+                    ctrl.Cprocessor.Operation = 1;
+
+                    return;
+                }
             }
 
             if ((int)e.KeyChar == 47)//div
             {
-                if (inNumber.Text != "0")
+                if (state == 1)
                 {
-                  
-                }
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
+
+
+
+                        if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.processor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "/";
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "/";
+                        ResultState = 1;
+                    }
+                    ctrl.processor.Operation = 4;
+
                     return;
+                }
+
+                if (state == 2)
+                {
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
+
+
+
+                        if (inNumber.Text.Contains('/')) ctrl.Fprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Fprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.Fprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.Fprocessor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "/";
+                        divState = 0;
+                        divState1 = 0;
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "/";
+                        ResultState = 1;
+                    }
+                    ctrl.Fprocessor.Operation = 4;
+
+                    return;
+                }
+
+                if (state == 3)
+                {
+                    ctrl.Cprocessor.Operation = 0;
+
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+
+                        ResultState = 2;
+
+                        if (inNumber.Text.Contains('/')) ctrl.Cprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Cprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+'))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 2;
+
+                        if (ctrl.Cprocessor.Operation != 0)
+                            DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "/";
+                        ResultState = 1;
+                        divState = 0;
+                        divState1 = 0;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "/";
+                        ResultState = 1;
+                    }
+
+                    ctrl.Cprocessor.Operation = 4;
+
+                    return;
+                }
             }
 
             if ((int)e.KeyChar == 42)//mult
             {
-                if (inNumber.Text != "0")
+                if (state == 1)
                 {
-                 
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
 
+
+
+                        if (inNumber.Text.Contains('/')) ctrl.processor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.processor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.processor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.processor.Operation = 2;
+
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "*";
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "*";
+                        ResultState = 1;
+                    }
+                    ctrl.processor.Operation = 3;
+
+                    return;
                 }
-                return;
+
+                if (state == 2)
+                {
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+                        ResultState = 2;
+                        if (inNumber.Text.Contains('/')) ctrl.Fprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Fprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+')) ctrl.Fprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-")) ctrl.Fprocessor.Operation = 2;
+
+                        DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "*";
+                        divState = 0;
+                        divState1 = 0;
+                        ResultState = 1;
+                    }
+
+                    else
+                    {
+
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "*";
+                        ResultState = 1;
+                    }
+                    ctrl.Fprocessor.Operation = 3;
+
+                    return;
+                }
+
+                if (state == 3)
+                {
+                    ctrl.Cprocessor.Operation = 0;
+
+                    if (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                    {
+
+                        ResultState = 2;
+
+                        if (inNumber.Text.Contains('/')) ctrl.Cprocessor.Operation = 4;
+                        if (inNumber.Text.Contains('*')) ctrl.Cprocessor.Operation = 3;
+                        if (inNumber.Text.Contains('+'))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 1;
+                        if (inNumber.Text.Contains('-') && !inNumber.Text.StartsWith("-"))
+                            if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                                ctrl.Cprocessor.Operation = 2;
+
+                        if (ctrl.Cprocessor.Operation != 0)
+                            DoCmnd(40);
+
+                        ResultState = 0;
+                    }
+
+                    if (ResultState == 0)
+                    {
+                        inNumber.Text += "*";
+                        ResultState = 1;
+                        divState = 0;
+                        divState1 = 0;
+                    }
+
+                    else
+                    {
+                        ResultState = 2;
+                        DoCmnd(40);
+                        inNumber.Text += "*";
+                        ResultState = 1;
+                    }
+
+                    ctrl.Cprocessor.Operation = 3;
+
+                    return;
+                }
             }
 
             if ((int)e.KeyChar == 61)
             {
-               
-                return;
+                if (state == 1)
+                {
+                    if (ctrl.processor.Operation != 0)
+                    {
+
+                        if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '/')
+                        {
+                            ctrl.processor.RightOp.number = ctrl.processor.LeftOp.number;
+                            ResultState = 0;
+
+                        }
+                        ResultState = 2;
+                        DoCmnd(40);
+                        ResultState = 0;
+                    }
+
+                    return;
+
+                }
+
+                if (state == 2)
+                {
+                    if (ctrl.Fprocessor.Operation != 0)
+                    {
+                        if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '/')
+                        {
+                            ctrl.Fprocessor.RightOp.NumberString = ctrl.Fprocessor.LeftOp.NumberString;
+                            ResultState = 0;
+                        }
+
+                        ResultState = 2;
+                        DoCmnd(40);
+                        ResultState = 0;
+
+                    }
+
+                    return;
+                }
+
+                if (state == 3)
+                {
+                    if (ctrl.Cprocessor.Operation != 0)
+                    {
+                        if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '/')
+                        {
+                            ctrl.Cprocessor.RightOp.NumberString = ctrl.Cprocessor.LeftOp.NumberString;
+                            ResultState = 0;
+                        }
+                    }
+
+                    ResultState = 2;
+                    DoCmnd(40);
+                    ResultState = 0;
+
+                    return;
+                }
             }
 
             if ((int)e.KeyChar == 8)
             {
-               
+                if (state == 1)
+                {
+                    if (inNumber.Text.Length != 1)
+                    {
+                        if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '/' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '-')
+                        {
+                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                            ResultState = 0;
+                            ctrl.processor.Operation = 0;
+                        }
+                        else
+                        {
+                            if (ctrl.processor.RightOp.number == "0" || (!inNumber.Text.Contains('/') && !inNumber.Text.Contains('*') && !inNumber.Text.Contains('+') && !inNumber.Text.Contains('-')))
+                            {
+                                ctrl.editor.number = ctrl.editor.number.Remove(ctrl.editor.number.Length - 1);
+                                ctrl.processor.LeftOp.number = ctrl.processor.LeftOp.number.Remove(ctrl.processor.LeftOp.number.Length - 1);
+                                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                                return;
+                            }
+
+                            if (ctrl.processor.RightOp.number == "0" && (inNumber.Text.Contains('/') || inNumber.Text.Contains('*') || inNumber.Text.Contains('+') || inNumber.Text.Contains('-')))
+                            {
+
+                                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                                return;
+                            }
+
+                            if (ctrl.processor.RightOp.number != "0")
+                            {
+                                ctrl.processor.RightOp.number = ctrl.processor.RightOp.number.Remove(ctrl.processor.RightOp.number.Length - 1);
+                                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                                if (ResultState == 0) ctrl.editor.number = ctrl.editor.number.Remove(ctrl.editor.number.Length - 1);
+                                return;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+
+                        ctrl.editor.number = "0";
+                        ctrl.processor.RightOp.number = "0";
+                        ctrl.processor.LeftOp.number = "0";
+                        ctrl.processor.Operation = 0;
+                        inNumber.Text = "0";
+                    }
+
+                }
             }
 
             if ((i < ctl.Pin) || (i >= 16))
             {
-       
-     
+                if (i != -1)
+                    DoCmnd(i);
             }
         }
 
@@ -673,11 +1346,25 @@ namespace Лабораторная_работа__2_ТРПО
 
                 if (ResultState == 0)
                 {
-                    if (!ctrl.processor.LeftOp.number.Contains('.'))
+                    if (divState == 0)
                     {
-                        ctrl.processor.LeftOp.number = ctrl.DoCommand(16);
-                        inNumber.Text = ctrl.processor.LeftOp.number;
-                        return;
+                        if (!ctrl.Cprocessor.LeftOp.number.re.Contains(','))
+                        {
+                            ctrl.Ceditor.re = ctrl.Ceditor.re.Insert(ctrl.Cprocessor.LeftOp.NumberString.Length - (ctrl.Cprocessor.LeftOp.number.im.Length + 2), ",");
+                            ctrl.Cprocessor.LeftOp.NumberString = ctrl.Cprocessor.LeftOp.NumberString.Insert(ctrl.Cprocessor.LeftOp.NumberString.Length - (ctrl.Cprocessor.LeftOp.number.im.Length + 2), ",");
+                            inNumber.Text = ctrl.Cprocessor.LeftOp.NumberString;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (!ctrl.Cprocessor.LeftOp.number.im.Contains(','))
+                        {
+                            ctrl.Cprocessor.LeftOp.number.im += ",";
+                            ctrl.Ceditor.im = ctrl.Cprocessor.LeftOp.number.im;
+                            inNumber.Text = ctrl.Cprocessor.LeftOp.NumberString;
+                            return;
+                        }
                     }
                 }
 
@@ -685,10 +1372,33 @@ namespace Лабораторная_работа__2_ТРПО
                 {
                     if (inNumber.Text[inNumber.Text.Length - 1] != '/' && inNumber.Text[inNumber.Text.Length - 1] != '*' && inNumber.Text[inNumber.Text.Length - 1] != '+' && inNumber.Text[inNumber.Text.Length - 1] != '-')
                     {
-                        if (!ctrl.processor.RightOp.number.Contains('.'))
+                        if (divState == 0)
                         {
-                            ctrl.processor.RightOp.number += ".";
-                            inNumber.Text += ".";
+                            if (!ctrl.Cprocessor.RightOp.number.re.Contains(','))
+                            {
+                                for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length; i++)
+                                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                                ctrl.Ceditor.re = ctrl.Ceditor.re.Insert(ctrl.Cprocessor.RightOp.NumberString.Length - (ctrl.Cprocessor.RightOp.number.im.Length + 2), ",");
+                                ctrl.Cprocessor.RightOp.NumberString = ctrl.Cprocessor.RightOp.NumberString.Insert(ctrl.Cprocessor.RightOp.NumberString.Length - (ctrl.Cprocessor.RightOp.number.im.Length + 2), ",");
+
+
+                                inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                            }
+                        }
+                        else
+                        {
+                            if (!ctrl.Cprocessor.RightOp.number.im.Contains(','))
+                            {
+                                for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length; i++)
+                                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                                ctrl.Cprocessor.RightOp.number.im += ",";
+                                ctrl.Ceditor.im = ctrl.Cprocessor.RightOp.number.im;
+
+                                inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+
+                            }
                         }
                     }
                 }
@@ -826,54 +1536,57 @@ namespace Лабораторная_работа__2_ТРПО
             if (state == 3)
             {
                 if (ctrl.Cprocessor.Operation == 2)
-                    if (inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '-')
-                    {
-                        ctrl.Cprocessor.Operation = 1;
-                        if (ctrl.Cprocessor.RightOp.NumberString != "0+0i")
+                {
+                    if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                        if (inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '-')
                         {
-                            for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length; i++)
+                            ctrl.Cprocessor.Operation = 1;
+                            if (ctrl.Cprocessor.RightOp.NumberString != "0+0i" && inNumber.Text.Length - ctrl.Cprocessor.LeftOp.NumberString.Length != 1)
+                            {
+                                for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length; i++)
+                                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
                                 inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
 
-                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                                inNumber.Text += "+";
 
-                            inNumber.Text += "+";
+                                inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                            }
 
-                            inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
-                        }
-
-                        else
-                        {
-                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-
-                            inNumber.Text += "+";
-
-                            inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
-                        }
-                    }
-
-                if (ctrl.Cprocessor.Operation == 1)
-                    if (inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '+')
-                    {
-                        ctrl.Cprocessor.Operation = 2;
-                        if (ctrl.Cprocessor.RightOp.NumberString != "0+0i")
-                        {
-                            for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length; i++)
+                            else
+                            {
                                 inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
 
-                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
-
-                            inNumber.Text += "-";
-
-                            inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                                inNumber.Text += "+";
+                            }
                         }
-
-                        else
+                }
+                else
+                {
+                    if (inNumber.Text.Length > ctrl.Cprocessor.LeftOp.NumberString.Length)
+                        if (inNumber.Text[ctrl.Cprocessor.LeftOp.NumberString.Length] == '+')
                         {
-                            inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+                            ctrl.Cprocessor.Operation = 2;
+                            if (ctrl.Cprocessor.RightOp.NumberString != "0+0i" &&  inNumber.Text.Length - ctrl.Cprocessor.LeftOp.NumberString.Length != 1)
+                            {
+                                for (int i = 0; i < ctrl.Cprocessor.RightOp.NumberString.Length; i++)
+                                    inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
 
-                            inNumber.Text += "-";
+                                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                                inNumber.Text += "-";
+
+                                inNumber.Text += ctrl.Cprocessor.RightOp.NumberString;
+                            }
+
+                            else
+                            {
+                                inNumber.Text = inNumber.Text.Remove(inNumber.Text.Length - 1);
+
+                                inNumber.Text += "-";
+                            }
                         }
-                    }
+                }
             }
 
 
@@ -906,10 +1619,12 @@ namespace Лабораторная_работа__2_ТРПО
                     if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '/')
                     {
                         ctrl.processor.RightOp.number = ctrl.processor.LeftOp.number;
+                        ResultState = 0;
 
                     }
-                    ResultState = 0;
+                    ResultState = 2;
                     DoCmnd(40);
+                    ResultState = 0;
                 }
 
                 return;
@@ -937,7 +1652,7 @@ namespace Лабораторная_работа__2_ТРПО
 
             if (state == 3)
             {
-                if (ctrl.Fprocessor.Operation != 0)
+                if (ctrl.Cprocessor.Operation != 0)
                 {
                     if (inNumber.Text[inNumber.Text.Length - 1] == '+' || inNumber.Text[inNumber.Text.Length - 1] == '-' || inNumber.Text[inNumber.Text.Length - 1] == '*' || inNumber.Text[inNumber.Text.Length - 1] == '/')
                     {
@@ -1264,6 +1979,8 @@ namespace Лабораторная_работа__2_ТРПО
                 if (ResultState == 0)
                 {
                     inNumber.Text += "*";
+                    divState = 0;
+                    divState1 = 0;
                     ResultState = 1;
                 }
 
@@ -1387,6 +2104,8 @@ namespace Лабораторная_работа__2_ТРПО
                 if (ResultState == 0)
                 {
                     inNumber.Text += "/";
+                    divState = 0;
+                    divState1 = 0;
                     ResultState = 1;
                 }
 

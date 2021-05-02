@@ -104,13 +104,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 case 24: str = editor.number; buf.number= str; buf.PInt = processor.LeftOp.PInt; memory.Add(buf); /*Добавить к содержимому памяти*/ break;
 
-                /*Подготовка к выполнению операций*/
-
-                case 25:
-
-                case 26:
-
-                case 27:
 
                 case 28:
 
@@ -187,13 +180,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 case 24: str = Feditor.number; buf.NumberString = str; buf.PInt = Fprocessor.LeftOp.PInt; Fmemory.Add(buf); /*Добавить к содержимому памяти*/ break;
 
-                /*Подготовка к выполнению операций*/
-
-                case 25:
-
-                case 26:
-
-                case 27:
 
                 case 28:
 
@@ -279,14 +265,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 case 24: str = Ceditor.number; buf.NumberString = str; buf.PInt = processor.LeftOp.PInt; Cmemory.Add(buf); /*Добавить к содержимому памяти*/ break;
 
-                /*Подготовка к выполнению операций*/
-
-                case 25:
-
-                case 26:
-
-                case 27:
-
                 case 28:
 
                     if (processor.Operation != n - 24 && Ceditor.State == 1)
@@ -323,7 +301,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
         }
 
-        //Взять из памяти
 
         public string TakeOutTheMemory()
 

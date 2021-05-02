@@ -181,7 +181,6 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
         //Установить и получить число строкой
 
         public string NumberString
-
         {
 
             set
@@ -256,18 +255,14 @@ namespace Лабораторная_работа__2_ТРПО.ЛБР_2
 
                 conv.SetP = p;
 
-                if (number.im.Length > 0)
-                {
-                    if (Convert.ToDouble(number.im) >= 0)
-                        return number.re + "+" + number.im + "i";
-                }
+                if (Convert.ToDouble(number.im) >= 0)
+                    return number.re + "+" + number.im + "i";
 
                 else
 
                     return number.re + number.im + "i";
 
 
-                return "";
 
             }
 

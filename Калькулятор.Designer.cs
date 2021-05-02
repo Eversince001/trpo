@@ -62,7 +62,6 @@ namespace Лабораторная_работа__2_ТРПО
             this.ButtonCL = new System.Windows.Forms.Button();
             this.button20 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.ButtonPlus = new System.Windows.Forms.Button();
             this.ButtonMinus = new System.Windows.Forms.Button();
@@ -684,7 +683,6 @@ namespace Лабораторная_работа__2_ТРПО
         private System.Windows.Forms.Button ButtonCL;
         private System.Windows.Forms.Button button20;
         private System.Windows.Forms.Button button21;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Button ButtonPlus;
         private System.Windows.Forms.Button ButtonMinus;
